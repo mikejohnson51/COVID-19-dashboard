@@ -1,0 +1,9 @@
+---
+title: "My dashboard"
+output:
+  flexdashboard::flex_dashboard:
+    navbar:
+      - { icon: "fa-question-circle", href: "https://google.com", align: right }
+---
+
+i

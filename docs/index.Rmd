@@ -1,0 +1,30 @@
+---
+title: "Building a COVID-19 Shiny Dashboard"
+---
+
+# COVID-19-dashboard
+
+Topics: 
+  - Shiny basics 
+  - Web Scraping / Streaming 
+  - Shiny basics 
+  - Leaflet basics 
+  - Interactive (and reactive) Maps, Charts, and Tables 
+  - Mouse and Keyboard listeners 
+  - UI formating 
+  
+## Table of Contents:  
+<br>
+
+### 01: [Setting up your Project](00_setting_up_the_project.html)  
+### 02: [Getting Data](01_getting_data.html)  
+### 03: [Building dynamic Maps](02_maps.html)
+### 04: [Building dynamic Graphs](02_charts.html)
+### 05: [Building dynamic Tables](02_table.html)
+### 06: [Shiny Basics](03_Shiny_Basics.html)
+### 07: [Adding a Map](04_Making_Maps.html)
+### 08: [Adding a Graph](05_Charts.html)
+### 09: [Adding a Table](06_adding_tables.html)
+### 10: [Adding an autofill search bar](07_autocomplete_window.html)
+### 11: [BONUS: Formating with JS & Scraping Wikipedia]()
+### 12: [Publishing your app]()

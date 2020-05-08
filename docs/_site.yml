@@ -1,0 +1,17 @@
+name: "Lab 5"
+template:
+  package: miketheme
+navbar:
+  title: "COVID-19 Dashboard"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Articles"
+      icon: fas fa-book
+      menu:
+      -  text: Setting COVID-19 Dashboard Project
+         href: 00_setting_up_the_project.html
+      -  text: Getting Data
+         href: 01_getting_data.html
+      -  text: Dynamic Plots
+         href: 02_dynamic_plots.html

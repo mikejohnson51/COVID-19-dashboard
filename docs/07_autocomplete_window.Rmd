@@ -1,0 +1,137 @@
+---
+title: "07_Autofill_and_keyboard"
+author: "Mike Johnson"
+date: "4/4/2020"
+output: 
+  html_document:
+    theme: united
+    highlight: pygment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, class.source = "numberLines lineAnchors", eval = FALSE)
+```
+
+Shiny offers direct access to the mouse listeners. It does not provide as easy access to the keyboard. But, we can use Javascript, in line with the R code, to do this. Therefore this section is a bit more "advanced" and will cover the folowing tasks:
+
+1. Adding an auto complete text-box to the Shiny UI
+2. Adding a keyboard listener to the text-box
+3. Modifying the server so that the interactive componets are changed when the text-box is changed and ENTER is pressed
+
+First lets add a text box to our UI. We dont want to make people guess what to enter so we want to autofill the possible selections as they type. Lets do this in its own Shiny Application so that we can (A) re emphasize the basics and work our a simple example. So staring with a standard Shiny App set up, lets add a text input and a text output.
+
+To do this, we need to load the shiny libray, define the UI (here again as a fluidPage). In the UI we ask for a place to enter text. The title of this input box will read "Enter Text Here:" and the object that is passed 
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+   textInput("auto", "Enter Text Here:"),
+   verbatimTextOutput("auto", TRUE)
+ )
+
+server = function(input, output, session){
+  output$auto <- renderText(input$auto)
+}
+ 
+runApp(shinyApp(ui, server), launch.browser = TRUE)
+
+```
+
+
+```{r}
+library(shiny)
+library(dplyr)
+library(sf)
+library(dqshiny)
+
+counties <- readRDS("data/counties.rds")
+source("helpers.R")
+nytimes ='https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
+covid19_data <-  read_covid19(nytimes)
+today        <-  today_centroids(counties, covid19_data)
+
+ui <- fluidPage(
+   autocomplete_input("auto", options = today$call,  "Select County"),
+   verbatimTextOutput("auto", TRUE)
+ )
+
+server = function(input, output, session){
+  output$auto <- renderText(input$auto)
+}
+ 
+runApp(shinyApp(ui, server), launch.browser = TRUE)
+
+```
+
+
+```{r}
+## Data Load
+....
+
+ui <- fluidPage(
+   autocomplete_input("auto", 
+                      options = structure(today$fips, names = today$call),  
+                      "Select County"),
+   verbatimTextOutput("auto", TRUE)
+ )
+
+server = function(input, output, session){
+  output$auto <- renderText(input$auto)
+}
+ 
+runApp(shinyApp(ui, server), launch.browser = TRUE)
+
+```
+
+```{r}
+## Data Load
+....
+base_map = base_leaf(today)
+
+ui <- fluidPage(
+  sidebarPanel(
+   autocomplete_input(id = "auto", 
+                      options = structure(today$fips, names = today$call),  
+                      value = ""
+                      label = "Select County"),
+   verbatimTextOutput("auto", TRUE)),
+   mainPanel(
+     leafletOutput("mymap")
+   )
+ )
+
+server = function(input, output, session){
+  output$auto  <- renderText(input$auto)
+  output$mymap <- renderLeaflet(base_map)
+}
+ 
+runApp(shinyApp(ui, server), launch.browser = TRUE)
+
+```
+
+```{r}
+## Data Load
+....
+
+## UI
+....
+
+server = function(input, output, session){
+  output$auto <- renderText(input$auto)
+  output$mymap <- renderLeaflet(base_map)
+  
+  observe(
+    if(input$auto != "" ){ 
+        leafletProxy("mymap") %>% zoom_to_county(counties, input$auto)
+    }
+  )
+}
+ 
+runApp(shinyApp(ui, server), launch.browser = TRUE)
+
+```
+
+Your challenge is to now integrate this new text input and observed event in the COVID-19-dashboard. Make sure that the global FIP code 
+
+[lets go to the next section!](01_getting_data.html)

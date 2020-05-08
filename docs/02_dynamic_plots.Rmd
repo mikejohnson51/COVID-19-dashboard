@@ -1,0 +1,216 @@
+---
+title: "02: Interactive Data Viz"
+subtitle: "dyGraph Charts"
+author: jmj00@ucsb.edu
+output: 
+  html_document:
+    highlight: pygment
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      class.source = "numberLines lineAnchors",
+                      warning = FALSE, message = FALSE,
+                      eval = TRUE)
+```
+
+In the last section we created two functions for getting the data for our COVID-19-Dashboard. This section will focus on building interactive charts. 
+
+To experiement with these things, open a new test script. At the top of it load the needed libraries and load you data as covered in the last section:
+
+
+```{r}
+library(dplyr)
+library(sf)   
+library(dygraphs) 
+library(leaflet)  
+library(DT)       
+source('../helpers.R')
+counties = readRDS("../data/counties.rds")
+covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+today = today_centroids(counties, covid19)
+
+```
+
+
+```{r, eval = FALSE}
+# Data Manipulation
+library(dplyr) # data.frames
+library(sf)    # Spatial
+
+# Interactive Data Viz
+library(dygraphs) # Charts
+
+## Load our helper file with our functions
+source('../helpers.R')
+
+## Load the county data
+counties = readRDS("../data/counties.rds")
+
+## Use our functions! from section 1:
+covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+today = today_centroids(counties, covid19)
+
+```
+
+## Charts
+
+The dygraphs package is an R interface to the dygraphs JavaScript charting library. It provides rich facilities for charting time-series data in R. An exhastive list of functionalities and exampels can be found [here](https://rstudio.github.io/dygraphs/).
+
+Our goal for this section is to make a function, called `make_graph` that wil ctake a FIP code as input and generate an interactive timeseries plot. The following code will get you a basic example that you can customize and tweak. 
+
+Let start by building our minimimally viable example:
+
+```{r}
+## Define FIP
+FIP = 6037
+
+# Filter the input data to the input FIP code and naming it subset
+subset = filter(covid19, fips == FIP)
+
+# DYGRAPHS uses the rownames of a data.frame to define the X-AXIS of a plot
+# So lets set the rownames of the "subset" to the date attribute
+rownames(subset) <- subset$date
+
+# Select only the cases and deaths from the subset data
+mygraph = dygraph(data = dplyr::select(subset, cases, deaths)) 
+
+mygraph
+```
+
+Let's add a title and some axis labels to our plot:
+
+```{r}
+dygraph(data = dplyr::select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') 
+```
+
+Lets add some nice visual aspects using the `dyHighlight` option.
+
+```{r}
+dygraph(data = dplyr::select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+# This options shades the area under the line plots
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2))
+```
+
+And the dyOptions features:
+
+```{r}
+dygraph(data = dplyr::select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+# This options shades the area under the line plots
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+dyOptions(stackedGraph = TRUE,
+          colors = c("blue", "darkred"))
+```
+
+Lets add these thes fucntionalities to a function in our `helper.R`. It might look something like this but should make use of your personal touches and aesthetics!
+
+```{r}
+
+make_graph  = function(covid19, FIP){
+
+subset = filter(covid19, fips == FIP)
+rownames(subset) <- subset$date
+
+# Fit and exponetial model
+exponential.model <- lm(log(cases)~ date, data = subset)
+# use the model to predict a what a expoential curve would look like
+subset$expCases = ceiling(exp(predict(exponential.model, list(date = subset$date))))
+
+dygraph(data = dplyr::select(subset, cases, deaths, expCases),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+  dyOptions(colors = c("blue", "red", "black"))
+
+}
+
+```
+
+To see it in action, lets call `make_graph` on
+
+```{r}
+
+basemap(today) %>% zoom_to_county(counties, 8031)
+make_graph(covid19, 8031)
+
+```
+
+## Tables
+
+## Option 1: Sorting a Table by state counts
+
+```{r}
+FIP = 6037
+
+myfip  = filter(today, fips == FIP)
+
+mydata = filter(today, state == myfip$state) %>% 
+  arrange(desc(cases)) %>% 
+  st_drop_geometry() %>% 
+  select(County = name, Cases = cases, Deaths = deaths) %>% 
+  mutate(DeathRate = paste0(100* round(Deaths/Cases,2), "%"))
+
+DT::datatable(mydata, caption = paste('COVID-19 Statistics', myfip$state, myfip$date)) 
+```
+
+## Option 2: Scraping Wikipedia Data
+
+```{r}
+library(rvest)
+
+FIP = 6037
+# Filter the input data to the input FIP code
+county_here = covid19 %>% filter(fips == FIP)
+# Build a Wikipedia URL using the data attribute 'call'
+url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name[1]))
+  # Steps:
+  ## 1. Read the HTML from the URL
+  ## 2. Read the Nodes from the HTML page and select the table with a class infobox
+  ## 3. Convert raw HTML node to a data.frame
+links <- read_html(url) %>%
+           html_nodes("table.infobox") %>% 
+           html_table(fill= TRUE) 
+
+## Make a datatable from the resulting data.frame and turn off paging
+DT::datatable(links[[1]], options = list(paging = FALSE))
+```
+
+
+Lets add all of these to the helper.R file which looks something like:
+
+Notice that all functions take static data and a FIP code. The ability to generte new objects according
+
+Shiny to pick FIP codes, and sync our visuals so that a new FIP code will update the table, charts and maps.
+
+```{r, eval = F}
+
+basemap()
+
+zoom_to_county()
+
+make_chart()
+
+make_table()
+
+```
+Great now that you have all of you funcions set, we can begin looking at how to use them in our Siniy App in the next [section](03_Shiny_Basics.html).
