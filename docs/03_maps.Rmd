@@ -14,45 +14,27 @@ klippy::klippy(position = c('top', 'right'))
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
                       class.source = "numberLines lineAnchors",
-                      warning = FALSE, message = FALSE,
-                      eval = TRUE)
+                      warning = FALSE, 
+                      message = FALSE,
+                      eval = TRUE,
+                      out.width = "100%")
 ```
 
 
 In the last section we created two functions for getting the data for our COVID-19-Dashboard. This section will focus on building interactive maps. To test these things, open a new test script. At the top of it attach the needed libraries and load your data as covered in the last section:
 
 ```{r, echo = FALSE}
-library(dplyr)
-library(sf)   
-library(dygraphs) 
-library(leaflet)  
-library(DT)       
 source('../helpers.R')
 counties = readRDS("../data/counties.rds")
-covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-today = today_centroids(counties, covid19)
-
+covid19  = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+today    = today_centroids(counties, covid19)
 ```
 
 
 ```{r, eval = FALSE}
-# Data Manipulation
-library(dplyr) # data.frames
-library(sf)    # Spatial
-
-# Interactive Data Viz
-library(leaflet)  # Maps
-
-## Load our helper file with our functions
 source('./helpers.R')
-
-## Load the county data
-counties = readRDS("./data/counties.rds")
-
-## Use our functions! from section 1:
 covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-today = today_centroids(counties, covid19)
-
+today   = today_centroids(counties, covid19)
 ```
 
 Leaflet is one of the most popular open-source JavaScript libraries for interactive maps. It’s used by websites like The New York Times, The Washington Post,  GitHub and Flickr, as well as GIS specialists like OpenStreetMap, Mapbox, and CartoDB. The `leaflet` R package makes it easy to integrate and control Leaflet maps in R. An exhaustive list of functionality and examples can be found [here](https://rstudio.github.io/leaflet/).
@@ -71,27 +53,24 @@ length(providers)
 ```
 
 ```{r}
-map = leaflet(data = today) %>%
+leaflet(data = today) %>%
 # Add Tile sets from linked providers:
   addProviderTiles('CartoDB.DarkMatter') %>%
 # Add a scale bar to a define position
   addScaleBar("bottomleft")
 
-map
 ```
 
-Now you'll see that our objects are not mapped! This is because we have not told `leaflet` how to represent the spatial objects. To do this we will pass our map object to the `addCircleMarkers`:
+Note that our objects are not mapped! This is because we have not told `leaflet` how to represent spatial input To do so we will pass our map object to the `addCircleMarkers`:
 
 ```{r}
-map = leaflet(data = today) %>%
+leaflet(data = today) %>%
   addProviderTiles(providers$CartoDB.DarkMatter) %>%
   addScaleBar("bottomleft") %>%
   addCircleMarkers()     
-
-map
 ```
 
-Great! They are now mapped but are pretty ugly. Lets make our map more pleasing by defining a color pallete and some aestehtic parameters:
+*Great!* They are now mapped but are pretty ugly. Lets make our map more pleasing by defining a color pallete and adding aestehtic parameters:
 
 ```{r}
 # define a unique color pallete
@@ -107,7 +86,7 @@ map = leaflet(data = today) %>%
     radius = ~size*2,       # the circle size
     layerId = ~fips,        # the circle ID (needed for Shiny!)
     label   = ~name         # how should the markers be labeled?
-  )     
+  )
 
 map
 ```
@@ -117,14 +96,16 @@ You job is to make this map your own by modifying the basemap,  color pallete, a
 
 ## Map Modifiers
 
-Here we are going to get a bit complicatd `r emo::ji("smile")`. What we want to do it define a function that will "zoom" to a defined county on your custom map. It other words, if a user asks about LA county, we want to zoom to LA county and show the county boundaries
+Here we are going to get a bit complicatd `r emo::ji("smile")`. What we want to do it define a function that will "zoom" to a defined county on your custom map. It other words, if a user asks about LA county, we want to zoom to LA county and show the county boundaries.
+
+To do this we will make a new function that requires a leaflet map, county boudaries, and a FIP code.
 
 ```{r}
 
-zoom_to_county = function(map, data, FIP){
-  # Filter the input data to the input FIP code
-  shp = filter(data, fips == FIP) 
-  # Build a buffered bounding box to center the map to:
+zoom_to_county = function(map, counties, FIP){
+  # Filter the counties to the input FIP code
+  shp = filter(counties, fips == FIP) 
+  # Build a buffered bounding box to center the map on:
   bounds = shp %>% 
     # make bounding box
     st_bbox() %>% 
@@ -136,8 +117,8 @@ zoom_to_county = function(map, data, FIP){
     st_bbox() %>% 
     # extract coordinates as vector
     as.vector()
-  # Clear all current shapes (remeber county centroids are currently markers!)
-  clearShapes(map) %>% 
+  # Clear all current shapes (remember county centroids are currently markers!)
+    clearShapes(map) %>% 
   # Add the county shape making the outline color red and the fill an opaque white
     addPolygons(data = shp,
                 color = "red",
@@ -150,24 +131,25 @@ zoom_to_county = function(map, data, FIP){
 ```
 
 
-Go ahead a copy the above code. Dont worry about changing any of it except for the way you want your Polygon to show up on the map. These are the parameters in the addPolygon() call. 
+Go ahead a copy the above code. Dont worry about changing any of it except for the way you want your Polygon to show up on the map. These are the parameters in the `addPolygon` method. 
 
-Once completed, you can pass you map object to this new function to have you map zoom!
+Once completed, you can pass yourmap object to this new function to have you map zoom!
+
 ```{r}
-map %>% zoom_to_county(counties, 6037)
+zoom_to_county(map, counties, 6037)
 ```
 
-
-Lets add these two functions to our `helper.R`. They might look something like this but should make use of 
+Lets add these two functions to our `helpers.R`. They might look something like this but should make use of 
 your personal touches and aesthetics!
 
 ```{r, eval = FALSE}
 
 basemap = function(today){
-  pal <- colorNumeric("viridis", NULL, n = 100)
+  pal <- colorNumeric("inferno", domain = today$size, n = 50)
+  pal2 <- colorNumeric("inferno", domain = today$cases, n = 50)
   
   leaflet(data = today) %>%
-    addProviderTiles(providers$CartoDB.DarkMatter) %>%
+    addProviderTiles('CartoDB.Positron') %>%
     addScaleBar("bottomleft") %>%
     addCircleMarkers(
       fillColor   = ~pal(size), 
@@ -175,7 +157,10 @@ basemap = function(today){
       fillOpacity = 0.5,
       radius      = ~size*2,
       layerId     = ~fips,
-      label       = ~name )
+      label       = ~name ) %>% 
+      addLegend("bottomright", pal = pal2, values = ~cases,
+    title = paste("COVID Cases\n", max(today$date)),
+    opacity = 1)
 }
 
 zoom_to_county = function(map, counties, FIP){
@@ -190,9 +175,16 @@ zoom_to_county = function(map, counties, FIP){
   
   clearShapes(map) %>% 
     addPolygons(data = shp,
-                color = "red", fillColor  = "white", fillOpacity = .4) %>% 
+                color = "red", 
+                fillColor  = "white", 
+                fillOpacity = .2) %>% 
     flyToBounds(bounds[1], bounds[2], bounds[3], bounds[4])
 }
 ```
 
+# Testing 
+
+```{r}
+basemap(today)
+```
 

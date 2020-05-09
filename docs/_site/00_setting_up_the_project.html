@@ -367,7 +367,44 @@ $(document).ready(function () {
       <a href="00_setting_up_the_project.html">Setting COVID-19 Dashboard Project</a>
     </li>
     <li>
-      <a href="01_.html">Getting Data</a>
+      <a href="01_getting_data.html">Getting Data</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Interactive Plots</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="02_graphs.html">Graphs</a>
+        </li>
+        <li>
+          <a href="03_maps.html">Maps</a>
+        </li>
+        <li>
+          <a href="04_tables.html">Tables</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Building Shiny</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="05_shiny_basics.html">Basics</a>
+        </li>
+        <li>
+          <a href="06_shiny_maps.html">Adding your Map</a>
+        </li>
+        <li>
+          <a href="07_shiny_graph.html">Adding Your Graph</a>
+        </li>
+        <li>
+          <a href="08_shiny_table.html">Adding Your Table</a>
+        </li>
+        <li>
+          <a href="09_autocomplete.html">Auto-Complete Searchbar</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="10_publish.html">Publish your Dashboard</a>
     </li>
   </ul>
 </li>
@@ -445,7 +482,7 @@ $(document).ready(function () {
 <p>Think of a package as a set of functions that others have written to make your life easier.</p>
 <p><strong>IMPORTANT:</strong> installing a package only downloads the source code onto your computer. To actually use it, you’ll need to attach/load the package using the <code>library()</code> call.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
-<p>Open your helpers.R file from the files tab and copy the following into the top of the file. This will ensure that you download and</p>
+<p>Open your <code>helpers.R</code> file from the files tab and copy the following into the top of the file. This will ensure that you download and</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 1. Install missing packages ----</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;dygraphs&quot;</span>, <span class="st">&quot;DT&quot;</span>, <span class="st">&#39;shiny&#39;</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -465,7 +502,7 @@ $(document).ready(function () {
 <span id="cb3-17"><a href="#cb3-17"></a><span class="co"># Shiny</span></span>
 <span id="cb3-18"><a href="#cb3-18"></a><span class="kw">library</span>(shiny)    <span class="co"># Starting Reactivity</span></span></code></pre></div>
 <p>Run all the code by highlighting and hitting CMND+ENTER (Mac) or CTRL+ENTER (Windows).</p>
-<p>Alternatively you can run a line one by one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
+<p>Alternatively you can run a line one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
 <p>The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.</p>
 <p>Along the way you will be asked to answer a few questions:</p>
 <p>Do you want to restart RStudio after?</p>
@@ -474,8 +511,8 @@ $(document).ready(function () {
 <p>This has to do with the sf package. For now, go ahead and type no to avoid potential build issues.</p>
 <p><strong>no</strong></p>
 </div>
-<div id="running-code" class="section level3">
-<h3>4. Running Code</h3>
+<div id="conclusion" class="section level3">
+<h3>4. Conclusion</h3>
 <p>Now that you have your project set up, and all the needed libraries installed, we are ready to start building out our application!</p>
 <p>The first thing we’ll need is data. Let’s move to <a href="01_getting_data.html">section 2</a> to learn how.</p>
 </div>

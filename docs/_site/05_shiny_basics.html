@@ -12,7 +12,7 @@
 <meta name="author" content="Mike Johnson" />
 
 
-<title>05_Charts</title>
+<title>03_Shiny_Basics</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -288,7 +288,44 @@ $(document).ready(function () {
       <a href="00_setting_up_the_project.html">Setting COVID-19 Dashboard Project</a>
     </li>
     <li>
-      <a href="01_.html">Getting Data</a>
+      <a href="01_getting_data.html">Getting Data</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Interactive Plots</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="02_graphs.html">Graphs</a>
+        </li>
+        <li>
+          <a href="03_maps.html">Maps</a>
+        </li>
+        <li>
+          <a href="04_tables.html">Tables</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Building Shiny</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="05_shiny_basics.html">Basics</a>
+        </li>
+        <li>
+          <a href="06_shiny_maps.html">Adding your Map</a>
+        </li>
+        <li>
+          <a href="07_shiny_graph.html">Adding Your Graph</a>
+        </li>
+        <li>
+          <a href="08_shiny_table.html">Adding Your Table</a>
+        </li>
+        <li>
+          <a href="09_autocomplete.html">Auto-Complete Searchbar</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="10_publish.html">Publish your Dashboard</a>
     </li>
   </ul>
 </li>
@@ -304,90 +341,57 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">05_Charts</h1>
+<h1 class="title toc-ignore">03_Shiny_Basics</h1>
 <h4 class="author">Mike Johnson</h4>
 <h4 class="date">4/3/2020</h4>
 
 </div>
 
 
-<div id="adding-our-chart" class="section level2">
-<h2>Adding our Chart</h2>
-<p>In the last section we saw how the mouseover listener can be used to extract the marker id – in this case the FIPS code. Being able to extract this id from user input is ideal from using the function (make_graph, and make_DT) we developed in section 02.</p>
-<p>Lets start with adding the dyGraph Chart. Rember that to add an object we need to define in in the UI (where is will be seen) and it the server, how it will be rendered, and adjusted.</p>
-<p>In the UI we want to display the chart below the covid_map in the mainPanel. We know we are generating a dyGraph object so we add dyGraphOutput and expect to display a renders output object called ‘covid_chart’.</p>
-<p>Go ahead and add this line to your UI object.</p>
-<pre class="r"><code>ui &lt;- fluidPage(
-  # Sidebar layout output definitions ----
-  sidebarPanel(
-    # Output: Message ----
-    textOutput(&quot;covid_message&quot;, container = h3) #&lt;&lt;
-  ),
-  
-  # Main panel for displaying outputs ----
-  mainPanel(
-    # App title ----
-    titlePanel(&#39;Mike Johnson: COVID-19 Tracker&#39;),
-    # Output: Map ----
-    leafletOutput(&#39;covid_map&#39;),
-    # Output: Chart ----
-    dygraphOutput(&#39;covid_chart&#39;)
-  )
-)</code></pre>
-<p>Great! Now lets define how that object is created in the server function. To do this we will use our make_graph function. Remember that this function requires an input FIP code. So we first must define a global variable called FIP.</p>
-<p>As a default, lets display a chart for the county with the most cases. In our global variables lets define this.</p>
-<p>With the global FIP variable defined, we can generate a dyGraph chart using our function and rendering it as a new output dyGraph object called covid_chart.</p>
-<pre class="r"><code>server &lt;- function(input, output, session) {
-  # Global variables initialized ----
-  FIP &lt;- today$fips[which.max(today$cases)]
-  v   &lt;- reactiveValues(msg = &quot; First Shiny!!! &quot;)
-  # Leaflet Map ----
-  # ---- must be rendered as leaflet ----
-  output$covid_map     &lt;- renderLeaflet({ leaf_map })
-  
-  # dyGraph Chart ----
-  # ---- must be rendered as dyGraph ----
-  output$covid_chart   &lt;- renderDygraph({ make_chart(covid19_data, FIP) })
-  
-  # Events ----
-  # ---- mouse ----
-  observeEvent(input$covid_map_marker_mouseover, {
-    txt = filter(today,fips == input$covid_map_marker_mouseover$id) 
-    v$msg &lt;- paste(&quot;Mouse is over: &quot;, txt$call)
-  })
+<div id="shiny-basics" class="section level2">
+<h2>Shiny Basics</h2>
+<p>Start by creating a new R file in you ‘COVID-19-dashboard’ directory. Call this file ‘app.R’.</p>
+<p>In the top of this file, lets put what we have already developed. These include loading the needed packages, loading the county data, sourcing our helper functions, and initializing the COVID data.</p>
+<pre class="r"><code># 1. Load packages ----
 
-  observeEvent(input$covid_map_marker_mouseout, { v$msg &lt;- &quot;Mouse is over: &quot; })
-  
-  # Message to Display ----
-  # ---- must be rendered as text ----
-  output$covid_message &lt;- renderText(v$msg)
-}</code></pre>
-<pre class="r"><code>runApp(shinyApp(ui, server), launch.browser = TRUE)</code></pre>
-<p><img src="figures/third_app.png" /></p>
+# Data Manipulation
+library(dplyr) # data.frames
+library(sf)    # Spatial
+
+# Interactive Data Viz
+library(leaflet)  # Maps
+library(dygraphs) # Charts
+library(DT)       # tables
+
+# Shiny
+library(shiny)    # Starting Reactivity
+
+# 2. Load data ----
+counties &lt;- readRDS(&quot;data/counties.rds&quot;)
+
+# Source helper functions -----
+source(&quot;helpers.R&quot;)
+
+# 3. Initalize data
+covid19_data &lt;-  read_covid19()
+today        &lt;-  today_centroids(counties, covid19_data)
+leaf_map     &lt;-  base_leaf(today)</code></pre>
+<p>In the last section we build functions that would generate tables (make_DT) and charts (make_graph) or modify a map (zoom_to_county) based on a provided FIP code. Shiny is a system that lest you build interactive web applications that let selections be made in a user interface (UI), that can be change, or change, processes that happen in a ‘server’.</p>
+<p>Shiny applications have two components, a user interface object and a server function, that are passed as arguments to the shinyApp function that creates a Shiny app object from this UI/server pair. The source code for both of these components is listed below.</p>
+<p>First lets</p>
+<p>The Shiny web framework is fundamentally about making it easy to wire up input values from a web page, making them easily available to you in R, and have the results of your R code be written as output values back out to the web page.</p>
+<p>Since Shiny web apps are interactive, the input values can change at any time, and the output values need to be updated immediately to reflect those changes.</p>
+<p>Shiny comes with a reactive programming library that you will use to structure your application logic. By using this library, changing input values will naturally cause the right parts of your R code to be reexecuted, which will in turn cause any changed outputs to be updated</p>
+<p>A fluid page layout consists of rows which in turn include columns. Rows exist for the purpose of making sure their elements appear on the same line (if the browser has adequate width). Columns exist for the purpose of defining how much horizontal space within a 12-unit wide grid it’s elements should occupy. Fluid pages scale their components in realtime to fill all available browser width.</p>
+<pre class="r"><code># 4. User interface ----
+ui &lt;- fluidPage( )
+
+# 5. Server logic ----
+server &lt;- function(input, output) { }</code></pre>
 </div>
-<div id="adding-a-mouse-click" class="section level2">
-<h2>Adding a Mouse Click</h2>
-<p>Now while setting a default FIP value is needed for the application to initialize, it would be better if the chart adapted to input from the map – much like our message!</p>
-<p>But, changing the graph with the mouseover would be impractical, so instead, lets base the change on if a map marker is clicked. This requires observing the event of a mouse click. Following on our pattern from before, a covid_map_marker_mouseclick will do the trick!</p>
-<p>Lets look at what to add to the server function:</p>
-<pre class="r"><code>observeEvent(input$covid_map_marker_click, {
-    FIP &lt;&lt;- input$covid_map_marker_click$id
-    output$covid_chart &lt;- renderDygraph({ make_graph(covid_data, FIP) })
-})</code></pre>
-<p>There is one <strong>very</strong> important thing to note in this entry. Here, the ‘&lt;&lt;-’ sets the global value of FIP to the id/FIP of the clicked on marker. Had we just used ‘&lt;-’, the assignement to FIP would have only occured in the scope of this observeEvent() function. However, by choosing the ‘&lt;&lt;-’ assignment operator, we are setting the value of FIP is the scope of the program, and not just the function.</p>
-<p>Wouldn’t it also be nice if we could also modify the map based on our click? How about we add our ‘zoom_to_county’ capabilites here?</p>
-<pre class="r"><code>observeEvent(input$covid_map_marker_click, {
-    FIP &lt;&lt;- input$covid_map_marker_click$id
-    output$covid_chart &lt;- renderDygraph({ make_chart(covid_data, FIP) })
-    leafletProxy(&#39;covid_map&#39;) %&gt;% zoom_to_county(counties, FIP)
-})</code></pre>
-<p>Here, there is another <strong>very</strong> important distinction to look at. Notice that with the dyGraph option we re-render the plot and override the current output dygraph object. This is because once a new FIP was selected, there was nothing from the previously rendered graph that would be useful to us.</p>
-<p>The same isn’t true for leaflet maps, in fact, our changes are often related to zooming, adding, or removing features to an existing rendered map. Therefore there is no need to re-render the map!</p>
-<p>The Shiny and leaflet developers recognize this and offer the leafletProxy() function to create a map-like object that can be used to customize and control a map that has already been rendered.</p>
-<p>With all those changes lets run our app once again!</p>
+<div id="for-our-purposes-an-application-can-be-run" class="section level2">
+<h2>For our purposes an application can be run</h2>
 <pre class="r"><code>runApp(shinyApp(ui, server), launch.browser = TRUE)</code></pre>
-<p>Now when a marker is clicked, the map zooms to the county, displays the border, and changes the chart – all based on user input!!</p>
-<p><img src="figures/fourth_app.png" /></p>
 </div>
 
 

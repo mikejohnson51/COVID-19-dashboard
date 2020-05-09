@@ -1,0 +1,125 @@
+---
+title: "02: Interactive Data Viz"
+subtitle: "dyGraph Charts"
+author: jmj00@ucsb.edu
+output: 
+  html_document:
+    highlight: pygment
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      class.source = "numberLines lineAnchors",
+                      warning = FALSE, message = FALSE,
+                      eval = TRUE)
+```
+
+In the last section we created two functions for getting the data for our COVID-19-Dashboard. This section will focus on building interactive charts. 
+
+To experiement with these things, open a new test script. At the top of it source your helper code and load you data as covered in the last section:
+
+
+```{r,echo = F}
+source('../helpers.R')
+covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+today   = today_centroids(counties, covid19)
+```
+
+
+```{r, eval = FALSE}
+source('./helpers.R')
+covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+today = today_centroids(counties, covid19)
+```
+
+## Charts
+
+The dygraphs package is an R interface to the dygraphs JavaScript charting library. It provides rich utilities for visualizing time-series data in R. An exhastive list of functionalities and examples can be found [here](https://rstudio.github.io/dygraphs/).
+
+Our goal for this section is to make a function, called `make_graph` that will take a FIP code as input and generate an interactive timeseries plot. The following code will get you a working example that you can customize and tweak using your knowledge from GEOG 183.
+
+Let start by building our minimimally viable example:
+
+```{r}
+## Define FIP
+FIP = 6037
+
+# Filter the input data to the input FIP code
+subset = filter(covid19, fips == FIP)
+
+# DYGRAPHS uses the rownames of a data.frame to define the X-AXIS of a plot
+# So lets set the rownames of the "subset" to the date attribute
+rownames(subset) <- subset$date
+
+# Select only the cases and deaths from the subset data and provide a title and axis labels
+dygraph(data = select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') 
+```
+
+Lets add some nice visual aspects using the `dyHighlight` option.
+
+```{r}
+dygraph(data = select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+# This options shades the area under the line plots
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2))
+```
+
+And the dyOptions features:
+
+```{r}
+dygraph(data = select(subset, cases, deaths),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+# This options shades the area under the line plots
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+dyOptions(stackedGraph = TRUE,
+          colors = c("blue", "darkred"))
+```
+
+Lets add these thes fucntionalities to a function in our `helpers.R`. It might look something like this but should make use of your personal touches and aesthetics!
+
+```{r}
+
+make_graph  = function(covid19, FIP){
+
+subset = filter(covid19, fips == FIP)
+rownames(subset) <- subset$date
+
+# Fit and exponetial model
+exponential.model <- lm(log(cases)~ date, data = subset)
+# use the model to predict a what a expoential curve would look like
+subset$expCases = ceiling(exp(predict(exponential.model, list(date = subset$date))))
+
+dygraph(data = select(subset, cases, deaths, expCases),
+        main = paste0("COVID-19 Trend: ", subset$name[1]),
+        ylab = 'Number of Cases/Deaths', 
+        xlab = 'Date') %>% 
+dyHighlight(highlightCircleSize = 4, 
+            highlightSeriesBackgroundAlpha = 0.2,
+            highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+dyOptions(colors = c("blue", "red", "black"))
+
+}
+
+```
+
+To see it in action, lets call `make_graph` on FIP code 8031:
+
+```{r}
+make_graph(covid19, 8031)
+
+```
