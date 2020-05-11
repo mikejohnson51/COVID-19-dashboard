@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Shiny Basics</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">COVID-19-dashboard lab</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fas fa fas fa-book"></span>
+     
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_setting_up_the_project.html">0. Setting COVID-19 Dashboard Project</a>
+    </li>
+    <li>
+      <a href="01_getting_data.html">1. Getting Data</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">2. Interactive Plots</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="02_graphs.html">Graphs</a>
+        </li>
+        <li>
+          <a href="03_maps.html">Maps</a>
+        </li>
+        <li>
+          <a href="04_tables.html">Tables</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">3. Building Shiny</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="05_shiny_basics.html">Basics</a>
+        </li>
+        <li>
+          <a href="06_shiny_maps.html">Adding your Map</a>
+        </li>
+        <li>
+          <a href="07_shiny_graphs.html">Adding Your Graph</a>
+        </li>
+        <li>
+          <a href="08_shiny_tables.html">Adding Your Table</a>
+        </li>
+        <li>
+          <a href="09_autocomplete_window.html">Auto-Complete Searchbar</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="10_publish.html">4. Publish your Dashboard</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/mikejohnson51/COVID-19-dashboard">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Shiny Basics</h1>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>In the last <a href="04_tables.html">section</a> we built functions that would generate tables (make_table) and charts (make_graph) or modify a map (zoom_to_county) based on a user-provided FIP code. Shiny is a system that lets you build interactive web applications that react to selections and action made in a user interface (UI), based on code that runs in a ‘server’.</p>
+<p>Thus, Shiny applications have two components,</p>
+<ol style="list-style-type: decimal">
+<li>a UI that dictates how things look and stores what a user does (click, add text, move sliders, etc.)</li>
+<li>a server function, that runs code and builds visualizations to be shown in the UI.</li>
+</ol>
+<p>When something changes in the UI (e.g. a user clicks on something) the server function is triggered or ‘reacts’.</p>
+<p>For this class project we are going to start with arguably the most a basic user interface - a <code>fluidPage</code>. A <code>fluidPage</code> layout consists of rows and include columns. Rows help ensure that elements appear on the same line (if the browser has adequate width). Columns exist for the purpose of defining how much horizontal space within a 12-unit wide grid elements should occupy. <code>fluidPage</code> layouts scale their components in real-time to fill all available browser width.</p>
+<p>So with that basic background, start by opening your <code>app.R</code> file in your COVID-19-dashboard project. In the top of this file, lets put what we have already developed by sourcing our <code>helpers.R</code> file and reading in our time series data, building today’s county centroids, and initializing a basemap.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Source helper functions -----</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">source</span>(<span class="st">&quot;helpers.R&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Initalize data</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>(<span class="st">&#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv&#39;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span></code></pre></div>
+<p>Next, lets initialize the UI element as a <code>fluidPage</code>. In our UI, lets add a <code>titlePanel</code> describing what the application is (You should obviously change the title 😄)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># User interface ----</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>( </span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Dashboard&#39;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  )</span></code></pre></div>
+<p>For a Shiny App to run, we need a server function. For now, lets create a server function that does nothing.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Server logic ----</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  </span>
+<span id="cb3-4"><a href="#cb3-4"></a>}</span></code></pre></div>
+<p>Last, you need to tell Shiny how to which UI relates to what server function in a synchronized Shiny object. To do this we provide our <code>ui</code> and <code>server</code> to the <code>shinyApp</code> function:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
+<p>Once finished, you should have an <code>app.R</code> file that looks like this:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Source helper functions -----</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">source</span>(<span class="st">&quot;helpers.R&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Initalize data</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>(<span class="st">&#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv&#39;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># User interface ----</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>( </span>
+<span id="cb5-11"><a href="#cb5-11"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Dashboard&#39;</span>)</span>
+<span id="cb5-12"><a href="#cb5-12"></a>  )</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co"># Server logic ----</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) { }</span>
+<span id="cb5-16"><a href="#cb5-16"></a></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="kw">shinyApp</span>( ui, server )</span></code></pre></div>
+<p>Once there, you can highlight your entire file (CMND/CNTL + A) and hit Run. The result should be something that looks like this:</p>
+<p><img src="figures/shiny-00.png" width="400px" /></p>
+<p>Sometimes Shiny will hang up your R session. If this happens go ahead and kill the Shiny Process by clicking on the red stop sign in the Console window (see below).</p>
+<p><img src="figures/kill_shiny.png" width="800px" /></p>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>With that, you are ready to start adding elements to your Shiny App!! In the next <a href="06_shiny_maps.html">section</a> we’ll see add our <code>leaflet</code> map to Shiny App skeloton.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

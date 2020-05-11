@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Setting up your project</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">COVID-19-dashboard lab</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fas fa fas fa-book"></span>
+     
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_setting_up_the_project.html">0. Setting COVID-19 Dashboard Project</a>
+    </li>
+    <li>
+      <a href="01_getting_data.html">1. Getting Data</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">2. Interactive Plots</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="02_graphs.html">Graphs</a>
+        </li>
+        <li>
+          <a href="03_maps.html">Maps</a>
+        </li>
+        <li>
+          <a href="04_tables.html">Tables</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">3. Building Shiny</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="05_shiny_basics.html">Basics</a>
+        </li>
+        <li>
+          <a href="06_shiny_maps.html">Adding your Map</a>
+        </li>
+        <li>
+          <a href="07_shiny_graphs.html">Adding Your Graph</a>
+        </li>
+        <li>
+          <a href="08_shiny_tables.html">Adding Your Table</a>
+        </li>
+        <li>
+          <a href="09_autocomplete_window.html">Auto-Complete Searchbar</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="10_publish.html">4. Publish your Dashboard</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/mikejohnson51/COVID-19-dashboard">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Setting up your project</h1>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p><img src="figures/logos.png" width="300px" style="display: block; margin: auto;" /></p>
+<div id="getting-set-up" class="section level2">
+<h2>Getting Set up</h2>
+<p>To create our COVID19-Dashboard we need to create new R project. R projects are useful for ensuring that paths and directories are centralized. To make a new project launch RStudio on your computer.</p>
+<p>If you do not have R and R studio already installed you can find R <a href="https://www.r-project.org/">here</a>. Make sure to get the most up to data version that is not a “pre-release”.</p>
+<p>R Studio is an IDE (“Integrated Development Environment”) for managing R projects, writing code, and running examples. You can download RStudio <a href="https://rstudio.com/products/rstudio/#Desktop">here</a>.</p>
+<p>Make sure to get the free Desktop version about halfway down the page.</p>
+<p>Follow the directions for installing each of those and you a will be set to go!</p>
+</div>
+<div id="launch-r-studio" class="section level2">
+<h2>Launch R Studio</h2>
+<p>With R and RStudio installed, launch RStudio. Here we will be creating a new project by selecting:</p>
+<p><code>File -&gt; New Project -&gt; New Directory -&gt; Shiny Web Application</code></p>
+<p>When prompted, fill in the project name “e.g. COVID19-Dashboard” and tell RStudio where to put your project on your computer (think of your project as a big folder where everything will be stored and linked). You should have something like this:</p>
+<p><img src="figures/create_project.png" width="400px" /></p>
+<p>When finished hit, <strong>Create Project!</strong></p>
+<p>After a moment a new session window will open that looks like the following, although your tabs may be in different sections…</p>
+<p><img src="figures/structure.png" width="600px" /></p>
+<p>Notice that your session is linked to your project (blue box).</p>
+<p>In the lower right hand corner of the session (red box), you have a the <em>Environment</em> tab that shows all the active objects in your session. The <em>files</em> tab shows all the files and folders in your default (project) workspace as in a PC/Mac finder/explorer window. The <em>plots</em> tab will show all your graphs.</p>
+<p>In the green window you will write code and open new/existing scripts.</p>
+<p>Finally, all output will be printed to your console (upper right, not colored)</p>
+<p>All of this will quickly become clear once we get going 😄</p>
+<p>Go ahead and close the RStudio session.</p>
+<div id="restarting-your-r-project" class="section level3">
+<h3>1. Restarting Your R-project</h3>
+<p>Someday you will want to revisit your project. Lets see how to do this, and the advantage to using R projects.</p>
+<p>Navigate to the project folder (look at the location you provided in the project creation).</p>
+<p>Open the <code>*.Rproj</code> file.</p>
+<p>You’ll see you’ve opened the same session!</p>
+</div>
+<div id="create-a-new-data-folder" class="section level3">
+<h3>2. Create a new data folder</h3>
+<p>In the files tab (remember in the red box) you’ll see the icon for ‘New Folder’. Click that, and name your new folder <code>data</code>. This is a common convention for structuring R projects.</p>
+<p>You should see the new folder appear in you project directory.</p>
+</div>
+<div id="create-a-r-scripts" class="section level3">
+<h3>3. Create a R scripts</h3>
+<p>New R scripts can be created by selecting:</p>
+<p><code>File -&gt; New File -&gt; R Script</code></p>
+<p>Or hitting <code>CMND+SHIFT+N</code> or <code>CTR+SHIFT+N</code></p>
+<p>Once a new <code>Untitled.R</code> file is opened, you should save it to the desired location. In our case your top-level project directory (see below):</p>
+<p><img src="figures/project.png" width="400px" /></p>
+</div>
+<div id="getting-the-needed-libraries" class="section level3">
+<h3>4. Getting the needed libraries</h3>
+<p>R comes loaded with many base packages. However none of these help us build interactive web applications using spatial data. Because of this, we will need to install a number of packages.</p>
+<p>In R, packages can be installed from CRAN (Comprehensive R Archive Network) using the following pattern:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">&#39;dplyr&#39;</span>)</span></code></pre></div>
+<p>Where, ‘dplyr’ is the name of the package we want to install. So what exactly is a package?</p>
+<p>Think of a package as a set of functions that others have written to make your life easier.</p>
+<p><strong>IMPORTANT:</strong> installing a package only downloads the source code onto your computer. To actually use it, you’ll need to attach/load the package using the <code>library()</code> call.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<p>Open your <code>helpers.R</code> file from the files tab and copy the following into the top of the file. This will ensure that you download and</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 1. Install missing packages ----</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;dygraphs&quot;</span>, <span class="st">&quot;DT&quot;</span>, <span class="st">&#39;shiny&#39;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>new.packages &lt;-<span class="st"> </span>list.of.packages[<span class="op">!</span>(list.of.packages <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>])]</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="cf">if</span>(<span class="kw">length</span>(new.packages)) <span class="kw">install.packages</span>(new.packages)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># 2. Load packages ----</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># Data Manipulation</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="kw">library</span>(dplyr)    <span class="co"># data.frames</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="kw">library</span>(sf)       <span class="co"># Spatial</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># Interactive Data Viz</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="kw">library</span>(leaflet)  <span class="co"># Maps</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="kw">library</span>(dygraphs) <span class="co"># Charts</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="kw">library</span>(DT)       <span class="co"># tables</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co"># Shiny</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="kw">library</span>(shiny)    <span class="co"># Starting Reactivity</span></span></code></pre></div>
+<p>Run all the code by highlighting and hitting CMND+ENTER (Mac) or CTRL+ENTER (Windows).</p>
+<p>Alternatively you can run a line one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
+<p>The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.</p>
+<p>Along the way you will be asked to answer a few questions:</p>
+<p>Do you want to restart RStudio after?</p>
+<p><strong>Yes</strong></p>
+<p>Do you want to install from source the package which needs compilation? (Yes/no/cancel)?</p>
+<p>This has to do with the sf package. For now, go ahead and type no to avoid potential build issues.</p>
+<p><strong>no</strong></p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>4. Conclusion</h3>
+<p>Now that you have your project set up, and all the needed libraries installed, we are ready to start building out our application!</p>
+<p>The first thing we’ll need is data. Let’s move to <a href="01_getting_data.html">section 2</a> to learn how.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

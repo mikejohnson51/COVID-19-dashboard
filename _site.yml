@@ -1,0 +1,37 @@
+navbar:
+  title: "COVID-19-dashboard lab"
+  type: default
+  left:
+    - text: "Articles"
+      icon: fas fa-book
+      menu:
+      -  text: 0. Setting COVID-19 Dashboard Project
+         href: 00_setting_up_the_project.html
+      -  text: 1. Getting Data
+         href: 01_getting_data.html
+      -  text: 2. Interactive Plots
+         menu:
+          - text: Graphs
+            href: 02_graphs.html
+          - text: Maps
+            href: 03_maps.html
+          - text: Tables
+            href: 04_tables.html
+      -  text: 3. Building Shiny
+         menu:
+          - text: Basics
+            href: 05_shiny_basics.html
+          - text: Adding your Map
+            href: 06_shiny_maps.html
+          - text: Adding Your Graph
+            href: 07_shiny_graphs.html
+          - text: Adding Your Table
+            href: 08_shiny_tables.html
+          - text: Auto-Complete Searchbar
+            href: 09_autocomplete_window.html
+      -  text: 4. Publish your Dashboard
+         href: 10_publish.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/mikejohnson51/COVID-19-dashboard
+output_dir: "docs"

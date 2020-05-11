@@ -1,0 +1,52 @@
+---
+title: "Publish Your Application"
+output: 
+  html_document:
+    highlight: pygment
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      class.source = "numberLines lineAnchors",
+                      warning = FALSE, message = FALSE,
+                      eval = FALSE)
+```
+
+Our complete Shiny App was completed in the last section ( [basic](08_shiny_tables.html); [advanced](09_autocomplete_window.html)). In this section we will modify the theme of the Application and then publish to a free web server!
+
+## Theme
+
+https://rstudio.github.io/shinythemes/
+
+
+
+## Deploying your application
+
+Now that your code is all finished and you are happy with it, lets publish it as a website that you can share with others.
+
+To do this we will using [shinyapps.io](https://www.shinyapps.io/). This service, offers a free tier that makes 
+deploying your Shiny applications super simple. You don’t need to own a server or know how to configure a firewall meaning no hardware, installation, or annual contract is required.
+
+Navigate to that website and sign-up.
+
+Once you are signed up, you will be directed to a dashboard that looks like something like this:
+
+![](figures/shinyapps.png)
+
+From here you'll need to follow the directions to lauch your application. 
+
+Step one is already taken care of, step 2 requires you to copy some code into your console and run it to authorize your computer to deploy applications to your `shinyapps.io` account.
+
+Step 3 is  attaching the rsconnect library and deploying the application:
+
+If you have set up you 
+
+
+## Conclusion
+
+Congraulation! You have built a fully felged, customized web application displaying up-to-date, live COVID information in map, table, and graph form!
+

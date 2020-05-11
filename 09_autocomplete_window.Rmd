@@ -1,0 +1,81 @@
+---
+title: "Autofill Table and Keyboard Listener"
+output: 
+  html_document:
+    highlight: pygment
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      class.source = "numberLines lineAnchors",
+                      warning = FALSE, message = FALSE,
+                      eval = FALSE)
+```
+
+The last [section](08_shiny_tables.Rmd) finalized the base Shiny Application. In this section we are going to add an advanced capability that includes adding an auto complete text-box to the Shiny UI allowing users to select county names and modifying the server so the text box can set the global FIP variable and change the interactive components.
+
+# Extending the UI:
+
+First lets add a text box to our UI. We don't want to make people guess what their options are so we will add an autofilling capability that shows valid selections as a user types.
+
+To do this, we need to load the `dqshiny` library (taken care of in the `helpers.R` script) and update the UI.
+
+```{r}
+ui <- fluidPage(
+  
+  titlePanel('Mike Johnson: COVID-19 Tracker'),
+  # Sidebar layout output definitions ----
+  sidebarPanel(
+    autocomplete_input("auto", "Search for a County:", 
+                       value = "",
+                       structure(today$fips, names = today$name)),
+    # Output: Message ----
+    textOutput("covid_message", container = h3),
+    DTOutput("covid_table")
+  ),
+  
+  # Main panel for displaying outputs ----
+  mainPanel(
+    # App title ----
+    # Output: Map ----
+    leafletOutput('covidmap'),
+    # Output: Chart ----
+    dygraphOutput('covid_chart')
+  )
+)
+```
+
+Here we added the `autocomplete_input` function. The way we have this set up, the function sotred an object called `auto` in the `input` list. The default value is `""` and the prompt displayed to users is "*Search for a County:*". 
+
+The tricky part is that we want to return a FIP code from the textbox (to parameterize `zoom_to_county`, `make_table`, and `make_chart`) but users need to be able to search by county/state names (bcause who really knows their FIP code ?!). Becasue of this, we need to structure our searchable data so that selecting a name, will return the associated FIP code. 
+
+We do this with the `structure` call. Here the first input (`today$fips`) defines whats returned while the name input (`today$name`) defines the searchable values and what users can select.
+
+## Extending the Server
+
+In the server function we are going to add an observer. This time we are not observing a specific event but rather a defined expression. The expression we'll observe  is if `auto` (coming from the autofill box) is either `""` (the default set by value) or `NULL`. If either of these conditions are TRUE, the our reactive observer returns NULL. 
+
+Otherwise is initates the same workflow that we defined in our mouseclick event observer. Specifically, the covidmap zoom is updated, the covid_chart is re-generated, and a new table is scraped and visualized.
+
+```{r}
+
+observe( 
+    if(input$auto == "" || is.null(input$auto)){ 
+      NULL 
+    } else {
+      FIP <<- input$auto
+      leafletProxy("covidmap") %>% zoom_to_county(counties, FIP)
+      output$covid_chart <- renderDygraph({ make_graph(covid19, FIP) })
+      output$covid_table      <- renderDT({ make_table(today, FIP) })
+    }
+  )
+```
+
+
+## Conclusion
+
+Fantastic, now we have a completly functional and enhanced web application. Lets move to the next [section](10_publish.html) where we will apply a unique theme to our application and publish it as a website!

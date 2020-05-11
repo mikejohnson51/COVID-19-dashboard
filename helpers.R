@@ -1,5 +1,8 @@
+
 # 1. Install missing packages ----
-list.of.packages <- c("dplyr", "sf", "leaflet", "dygraphs", "DT", 'shiny')
+list.of.packages <- c("dplyr", "sf", 
+                      "leaflet", "dygraphs", "DT", 
+                      'shiny', 'rvest', "dqshiny", "shinythemes")
 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -13,13 +16,16 @@ library(sf)       # Spatial
 library(leaflet)  # Maps
 library(dygraphs) # Charts
 library(DT)       # tables
+library(rvest)    # webscraping
 
 # Shiny
-library(shiny)    # Starting Reactivity
+library(dqshiny)    # auto complete
+library(shiny)       # Starting Reactivity
+library(shinythemes) # themes
 
 # Load Spatial Data
 
-counties = readRDS("../data/counties.rds")
+counties = readRDS("./data/counties.rds")
 
 # Read in COVID-19 Timesries from URL
 read_covid19 = function(url){
@@ -38,15 +44,26 @@ today_centroids = function(counties, covid_data){
     st_as_sf()
 }
 
-make_graph  = function(data, FIP){
-  subset = filter(data, fips == FIP)
-  rownames(subset) <- as.Date(subset$date)
-  dplyr::select(subset, cases, deaths) %>% 
-    dygraph(
-      main = paste0("COVID-19 Trend: ", 
-                    paste(subset$county[1], "County,", subset$state[1])),
-      ylab = 'Number of Cases/Deaths', xlab = 'Date') %>% 
-    dyOptions(stackedGraph = TRUE)
+make_graph  = function(covid19, FIP){
+  
+  subset = filter(covid19, fips == FIP)
+  rownames(subset) <- subset$date
+  
+  # Fit and exponetial model
+  exponential.model <- lm(log(cases)~ date, data = subset)
+  # use the model to predict a what a expoential curve would look like
+  subset$expCases = ceiling(exp(predict(exponential.model, list(date = subset$date))))
+  
+  dygraph(data = select(subset, cases, deaths, expCases),
+          main = paste0("COVID-19 Trend: ", subset$name[1]),
+          ylab = 'Number of Cases/Deaths', 
+          xlab = 'Date') %>% 
+    dyHighlight(highlightCircleSize = 4, 
+                highlightSeriesBackgroundAlpha = 0.2,
+                highlightSeriesOpts = list(strokeWidth = 2)) %>% 
+    #dyOptions(colors = c("blue", "red", "black"))
+    dyOptions(colors = c("#003660", "#FEBC11", "black"))
+  
 }
 
 
@@ -81,17 +98,45 @@ zoom_to_county = function(map, counties, FIP){
   
   clearShapes(map) %>% 
     addPolygons(data = shp,
-                color = "red", 
-                fillColor  = "white", 
+                color = "#003660", 
+                fillColor  = "#FEBC11", 
                 fillOpacity = .2) %>% 
     flyToBounds(bounds[1], bounds[2], bounds[3], bounds[4])
 }
-make_table = function(data, FIP){
-  event = data %>% filter(fips == FIP)
-  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", event$call))
-  links <- read_html(url) %>%
+
+make_table = function(today, FIP){
+  county_here = filter(today, fips == FIP)
+  
+  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name)) %>% 
+    read_html() %>%
     html_nodes("table.infobox") %>% 
     html_table(fill= TRUE) 
   
-  DT::datatable(links[[1]], options = list(paging = FALSE))
+  l = url[[1]]
+  ll = l[!l[,1] == l[,2],]
+  
+  ## Make a datatable from the resulting data.frame and turn off paging
+  datatable(ll,  caption = paste('Wikipedia Information:', county_here$name), 
+            options = list(paging = TRUE, searching = FALSE, ordering = FALSE),
+            colnames = rep("", ncol(ll)))
+}
+
+make_table2 = function(today, FIP){
+  county_here = filter(today, fips == FIP)
+  
+  # Filter todays data to the state of the input FIP
+  mydata = filter(today, state == county_here$state) %>% 
+    # Arrange the cases from largest to smallest
+    arrange(desc(cases)) %>% 
+    # Drop the geometry column
+    st_drop_geometry() %>% 
+    # Keep the  County name, cases and deaths
+    select(County = county, Cases = cases, Deaths = deaths) %>% 
+    # Create a new variable called Death Rate
+    mutate(DeathRate = paste0(100* round(Deaths/Cases,2), "%")) %>% 
+    head(10)
+  
+  
+  # Make an interactive Table! with a caption
+  datatable(mydata, caption = paste('COVID-19 Statistics', county_here$state, county_here$date), options = list(paging = FALSE, searching = FALSE)) 
 }
