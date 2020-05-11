@@ -5,6 +5,7 @@ title: "Building a COVID-19 Shiny Dashboard"
 # COVID-19-dashboard
 
 Topics: 
+
   - Shiny basics 
   - Web Scraping / Streaming 
   - Shiny basics 
@@ -16,15 +17,14 @@ Topics:
 ## Table of Contents:  
 <br>
 
-### 01: [Setting up your Project](00_setting_up_the_project.html)  
-### 02: [Getting Data](01_getting_data.html)  
-### 03: [Building dynamic Maps](02_maps.html)
-### 04: [Building dynamic Graphs](02_charts.html)
-### 05: [Building dynamic Tables](02_table.html)
-### 06: [Shiny Basics](03_Shiny_Basics.html)
-### 07: [Adding a Map](04_Making_Maps.html)
-### 08: [Adding a Graph](05_Charts.html)
-### 09: [Adding a Table](06_adding_tables.html)
-### 10: [Adding an autofill search bar](07_autocomplete_window.html)
-### 11: [BONUS: Formating with JS & Scraping Wikipedia]()
-### 12: [Publishing your app]()
+### 0: [Setting up your Project](00_setting_up_the_project.html)  
+### 01: [Getting Data](01_getting_data.html)  
+### 02: [Building dynamic Maps](02_maps.html)
+### 03: [Building dynamic Graphs](03_charts.html)
+### 04: [Building dynamic Tables](04_tables.html)
+### 05: [Shiny Basics](05_shiny_basics.html)
+### 06: [Adding a Map](06_shiny_maps.html)
+### 07: [Adding a Graph](07_shiny_graphs.html)
+### 08: [Adding a Table](08_shiny_tables.html)
+### 09: [Adding an autofill search bar](09_autocomplete_window.html)
+### 10: [Publishing your app](docs/10_publish.html)
