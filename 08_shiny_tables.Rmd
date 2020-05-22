@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       eval = FALSE)
 ```
 
-So we've set up a `map` ( [section](06_shiny_maps.html) ) and `dyGraph`( [section](07_shiny_graph.html) ) that are sychronized using Shiny reactive components and a common FIP id. Now lets use the same principles to add the table we generate with `make_table`. 
+So we've set up a `map` ( [section](06_shiny_maps.html) ) and `dyGraph`( [section](07_shiny_graphs.html) ) that are sychronized using Shiny reactive components and a common FIP id. Now lets use the same principles to add the table we generate with `make_table`. 
 
 ## Extending the UI
 

@@ -1,10 +1,12 @@
-Building a COVID-19 Shiny Dashboard
-================
 
-In this lab you will learn the basic of R/RShiny along with the basics
-of the primay interactive visual
+# Lab Activity for Geography 183 <img src="figures/ucsb_logo.png" width=160 height = 120 align="right" />
 
-[helpers.R](./helpers.R)
+## Building a COVID-19 Shiny Dashboard
+
+### Spting Quarter 2020
+
+In this lab you will learn the basics of R and RShiny along with the
+primary interactive visualization packages in the R ecosystem.
 
 ![](figures/final-app.gif)
 
@@ -19,7 +21,7 @@ of the primay interactive visual
 
 ## Table of Contents:
 
-### 00: [Setting up your Project](00_setting_up_the_project.html)
+### 00: [Setting up your Project](./docs/00_setting_up_the_project.html)
 
 ### 01: [Getting Data](01_getting_data.html)
 

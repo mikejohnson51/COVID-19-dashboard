@@ -1,12 +1,18 @@
 ---
-title: "Building a COVID-19 Shiny Dashboard"
+output: 
+  html_document:
+    highlight: pygment
 ---
+<br>
+<br>
 
-In this lab you will learn the basic of R/RShiny along with the basics of the primay interactive visual 
+# Lab Activity for Geography 183 <img src="figures/ucsb_logo.png" width=160 height = 120 align="right" />
+<br>
 
-[helpers.R](./helpers.R)
+## Building a COVID-19 Shiny Dashboard
+### Spring Quarter 2020
 
-![](figures/final-app.gif)
+In this lab you will learn the very basics of the following:
 
 ## Topics: 
 
@@ -16,9 +22,18 @@ In this lab you will learn the basic of R/RShiny along with the basics of the pr
   - Leaflet basics 
   - Interactive (and reactive) Maps, Charts, and Tables 
   - Mouse and Keyboard listeners 
-  - UI formating 
-  
+  - UI formatting 
+
+This may seem daunting, but everything you need is explained along the way, with example code to copy and or download. We are not asking you to restructure or modify the code - or the application - but to follow along and organize code snippets in a way that results in a custom, online visual platform. That said, apply the cartography and visualization techniques you've learned throughout the quarter to improve and customize the aesthetics of your dashboard.
+
+![](figures/final-app.gif)
+
+To complete this labs work your way through each section starting from building a R project (lesson 0) all the way to publishing your applications (lesson 10).To finish this lab you will submit a link (like this one here: [https://mikejohnson51.shinyapps.io/COVID-19-Dashboard/](https://mikejohnson51.shinyapps.io/COVID-19-Dashboard/)) to GauchoSpace pointing to your finished application. 
+
+<br>
+
 ## Table of Contents:  
+
 
 ### 00: [Setting up your Project](00_setting_up_the_project.html)  
 ### 01: [Getting Data](01_getting_data.html)  
