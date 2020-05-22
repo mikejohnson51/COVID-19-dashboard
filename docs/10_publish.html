@@ -13,6 +13,7 @@
 
 <title>Publish Your Application</title>
 
+<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -28,6 +29,98 @@
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
 
 
 <style type="text/css">
@@ -340,26 +433,82 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>Our complete Shiny App was completed in the last section ( <a href="08_shiny_tables.html">basic</a>; <a href="09_autocomplete_window.html">advanced</a>). In this section we will modify the theme of the Application and then publish to a free web server!</p>
+<p>Our complete Shiny App was finished in the last section ( <a href="08_shiny_tables.html">basic</a>; <a href="09_autocomplete_window.html">advanced</a>). In this section we will modify the theme of the Application and then publish to a free web server!</p>
 <div id="theme" class="section level2">
 <h2>Theme</h2>
-<p><a href="https://rstudio.github.io/shinythemes/" class="uri">https://rstudio.github.io/shinythemes/</a></p>
+<p>By default we are using the base Shiny theme. We want to personal the appearance of our application. HTML and JavaScript can be used to endlessly refine the Shiny UI however we are only going to utilize a pre-canned theme accessible in the <code>shinythemes</code> <a href="https://rstudio.github.io/shinythemes/">package</a>.</p>
+</div>
+<div id="live-theme-selector" class="section level2">
+<h2>Live theme selector</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
+<span id="cb1-2"><a href="#cb1-2"></a> shinythemes<span class="op">::</span><span class="kw">themeSelector</span>(), <span class="co"># &lt;--- ADD THIS ANYWHERE IN YOUR UI!</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a> <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Tracker&#39;</span>),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="co"># Sidebar layout output definitions ----</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="kw">sidebarPanel</span>(</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    <span class="kw">autocomplete_input</span>(<span class="st">&quot;auto&quot;</span>, </span>
+<span id="cb1-7"><a href="#cb1-7"></a>                       <span class="st">&quot;Search for a County:&quot;</span>, </span>
+<span id="cb1-8"><a href="#cb1-8"></a>                       <span class="dt">value =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>                       <span class="dt">max_options =</span> <span class="dv">5</span>,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>                       <span class="kw">structure</span>(today<span class="op">$</span>fips, <span class="dt">names =</span> today<span class="op">$</span>name)),</span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="co"># Output: Message ----</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>    <span class="kw">DTOutput</span>(<span class="st">&quot;covidTable&quot;</span>),</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  ),</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  </span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="co"># Main panel for displaying outputs ----</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="kw">mainPanel</span>(</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covidMessage&quot;</span>, <span class="dt">container =</span> h4),</span>
+<span id="cb1-18"><a href="#cb1-18"></a>    <span class="co"># Output: Map ----</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidMap&#39;</span>),</span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="co"># Output: Chart ----</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covidGraph&#39;</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  )</span>
+<span id="cb1-23"><a href="#cb1-23"></a>)</span></code></pre></div>
+<p><img src="figures/theme_selector.gif" /></p>
+<p>Once you identify the theme you like, substitute the live <code>themeSelector</code> with shinytheme(), and provide the name of the theme yo selected. I chose “journal”.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
+<span id="cb2-2"><a href="#cb2-2"></a> shinythemes<span class="op">::</span><span class="kw">themeSelector</span>(), <span class="co"># &lt;--- ADD THIS ANYWHERE IN YOUR UI!</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">theme =</span>  <span class="kw">shinytheme</span>(<span class="st">&quot;journal&quot;</span>),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="co"># Sidebar layout output definitions ----</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="kw">sidebarPanel</span>(</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    <span class="kw">autocomplete_input</span>(<span class="st">&quot;auto&quot;</span>, </span>
+<span id="cb2-7"><a href="#cb2-7"></a>                       <span class="st">&quot;Search for a County:&quot;</span>, </span>
+<span id="cb2-8"><a href="#cb2-8"></a>                       <span class="dt">value =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>                       <span class="dt">max_options =</span> <span class="dv">5</span>,</span>
+<span id="cb2-10"><a href="#cb2-10"></a>                       <span class="kw">structure</span>(today<span class="op">$</span>fips, <span class="dt">names =</span> today<span class="op">$</span>name)),</span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="co"># Output: Message ----</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="kw">DTOutput</span>(<span class="st">&quot;covidTable&quot;</span>),</span>
+<span id="cb2-13"><a href="#cb2-13"></a>  ),</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15"></a>  <span class="co"># Main panel for displaying outputs ----</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>  <span class="kw">mainPanel</span>(</span>
+<span id="cb2-17"><a href="#cb2-17"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covidMessage&quot;</span>, <span class="dt">container =</span> h4),</span>
+<span id="cb2-18"><a href="#cb2-18"></a>    <span class="co"># Output: Map ----</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidMap&#39;</span>),</span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="co"># Output: Chart ----</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covidGraph&#39;</span>)</span>
+<span id="cb2-22"><a href="#cb2-22"></a>  )</span>
+<span id="cb2-23"><a href="#cb2-23"></a>)</span></code></pre></div>
 </div>
 <div id="deploying-your-application" class="section level2">
 <h2>Deploying your application</h2>
-<p>Now that your code is all finished and you are happy with it, lets publish it as a website that you can share with others.</p>
+<p>Now that your code is all finished, you application has a unique theme, and you are happy with it, lets publish it as a website that you can share with others.</p>
 <p>To do this we will using <a href="https://www.shinyapps.io/">shinyapps.io</a>. This service, offers a free tier that makes deploying your Shiny applications super simple. You don’t need to own a server or know how to configure a firewall meaning no hardware, installation, or annual contract is required.</p>
-<p>Navigate to that website and sign-up.</p>
+<p>Navigate to that <a href="https://www.shinyapps.io/">website</a> and sign-up.</p>
 <p>Once you are signed up, you will be directed to a dashboard that looks like something like this:</p>
 <p><img src="figures/shinyapps.png" /></p>
-<p>From here you’ll need to follow the directions to lauch your application.</p>
-<p>Step one is already taken care of, step 2 requires you to copy some code into your console and run it to authorize your computer to deploy applications to your <code>shinyapps.io</code> account.</p>
-<p>Step 3 is attaching the rsconnect library and deploying the application:</p>
-<p>If you have set up you</p>
+<p>From here you’ll need to follow the directions to launch your application and click the publish button in the upper right.</p>
+<p>IF you have not yet connected you R session to shinyapps.io the you we need to add you account following the directions and using the information found on the home page of you shinyapp.io account.</p>
+<p>Once your account is connected, make sure that the data folder, helper.R and app.R files are selected, and that you l</p>
+<p><img src="figures/deployment.gif" /></p>
+<p>If/when you make changes to your application, follow this same process to simply republish the application. Here there are two warnings to be wary off.</p>
+<ol style="list-style-type: decimal">
+<li>Uploading an appa can take a few minutes.</li>
+<li>Remeber shinyapps.io is a free service. On occasion it will error out on deployment. Before contacting the TA or worrying to muhc simply try re-publishing it to see if the same error occurs.</li>
+</ol>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
-<p>Congraulation! You have built a fully felged, customized web application displaying up-to-date, live COVID information in map, table, and graph form!</p>
+<p>Congratulations! You have built a fully felged, customized web application displaying up-to-date, live COVID information in map, table, and graph form!</p>
 </div>
 
 

@@ -151,4 +151,4 @@ today_centroids = function(counties, covid_data){
 
 ## Conclusion
 
-Fantastic, now we have methods and data needed to build our Shiny App. Lets move to the next [section](02_graphs.html) where we will make interactive graphs of our timeseries data using the `dyGraphs` package. 
+Fantastic, now we have methods and data needed to build our Shiny App. Remember that c Lets move to the next [section](02_graphs.html) where we will make interactive graphs of our timeseries data using the `dyGraphs` package. 

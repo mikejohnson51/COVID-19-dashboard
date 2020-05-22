@@ -55,7 +55,7 @@ knitr::include_graphics("figures/structure.png")
 
 Notice that your session is linked to your project (blue box). 
 
-In the lower right hand corner of the session (red box), you have a the *Environment* tab that shows all the active objects in your session. The *files* tab shows all the files and folders in your default (project) workspace as in a PC/Mac finder/explorer window.  The *plots* tab will show all your graphs. 
+In the lower right hand corner of the session (red box), you have a the *Environment* tab that shows all the active objects in your session. The *files* tab shows all the files and folders in your default (project) work space as in a PC/Mac finder/explorer window.  The *plots* tab will show all your graphs. 
 
 In the green window you will write code and open new/existing scripts.
 
@@ -139,9 +139,9 @@ library(DT)       # tables
 library(shiny)    # Starting Reactivity
 ```
 
-Run all the code by highlighting and hitting CMND+ENTER (Mac) or CTRL+ENTER (Windows).
+Run all the code by highlighting and hitting `CMND+ENTER` (Mac) or `CTRL+ENTER` (Windows).
 
-Alternatively you can run a line one-by-one using the same keyboard shortcuts, or the `RUN` icon in the top right of the text editing window.
+Alternatively you can run a linea one-by-one using the same keyboard shortcuts, or the `RUN` icon in the top right of the text editing window.
 
 The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.
 

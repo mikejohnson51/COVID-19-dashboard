@@ -13,6 +13,7 @@
 
 <title>Setting up your project</title>
 
+<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -30,19 +31,18 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -62,7 +62,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -452,7 +452,7 @@ $(document).ready(function () {
 <p>After a moment a new session window will open that looks like the following, although your tabs may be in different sections…</p>
 <p><img src="figures/structure.png" width="600px" /></p>
 <p>Notice that your session is linked to your project (blue box).</p>
-<p>In the lower right hand corner of the session (red box), you have a the <em>Environment</em> tab that shows all the active objects in your session. The <em>files</em> tab shows all the files and folders in your default (project) workspace as in a PC/Mac finder/explorer window. The <em>plots</em> tab will show all your graphs.</p>
+<p>In the lower right hand corner of the session (red box), you have a the <em>Environment</em> tab that shows all the active objects in your session. The <em>files</em> tab shows all the files and folders in your default (project) work space as in a PC/Mac finder/explorer window. The <em>plots</em> tab will show all your graphs.</p>
 <p>In the green window you will write code and open new/existing scripts.</p>
 <p>Finally, all output will be printed to your console (upper right, not colored)</p>
 <p>All of this will quickly become clear once we get going 😄</p>
@@ -505,8 +505,8 @@ $(document).ready(function () {
 <span id="cb3-16"><a href="#cb3-16"></a></span>
 <span id="cb3-17"><a href="#cb3-17"></a><span class="co"># Shiny</span></span>
 <span id="cb3-18"><a href="#cb3-18"></a><span class="kw">library</span>(shiny)    <span class="co"># Starting Reactivity</span></span></code></pre></div>
-<p>Run all the code by highlighting and hitting CMND+ENTER (Mac) or CTRL+ENTER (Windows).</p>
-<p>Alternatively you can run a line one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
+<p>Run all the code by highlighting and hitting <code>CMND+ENTER</code> (Mac) or <code>CTRL+ENTER</code> (Windows).</p>
+<p>Alternatively you can run a linea one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
 <p>The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.</p>
 <p>Along the way you will be asked to answer a few questions:</p>
 <p>Do you want to restart RStudio after?</p>
