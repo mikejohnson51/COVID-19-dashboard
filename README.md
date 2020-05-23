@@ -14,6 +14,9 @@ By the end you will build a Shiny web application similar to this:
 
 ![](figures/final-app.gif)
 
+that can be found here:
+[COVID-19-Dashbaord](https://mikejohnson51.shinyapps.io/COVID-19-Dashboard/)
+
 ## Topics Covered:
 
   - Web Scraping / Streaming

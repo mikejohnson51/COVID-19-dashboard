@@ -1,0 +1,13 @@
+name: COVID-19-Dashboard
+title: COVID-19-Dashboard
+username:
+account: mikejohnson51
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2344005
+bundleId: 3182207
+url: https://mikejohnson51.shinyapps.io/COVID-19-Dashboard/
+when: 1590254676.94127
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data/.DS_Store

@@ -86,7 +86,7 @@ ui <- fluidPage(
 )
 ```
 
-That it! Now you are done `r emo::ji("smile")`! 
+That's it! Now you are done `r emo::ji("smile")`! 
 
 A full `app.R` file can be found [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/app.R). Feel free to use this file, but make sure you personal the code in the appropriate places.
 
