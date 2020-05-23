@@ -3,42 +3,46 @@
 
 ## Building a COVID-19 Shiny Dashboard
 
-### Spting Quarter 2020
+### Spring Quarter 2020
 
 In this lab you will learn the basics of R and RShiny along with the
-primary interactive visualization packages in the R ecosystem.
+primary interactive visualization packages in the R ecosystem by
+following the tutorials at this site
+<https://mikejohnson51.github.io/COVID-19-dashboard/>.
+
+By the end you will build a Shiny web application similar to this:
 
 ![](figures/final-app.gif)
 
-## Topics:
+## Topics Covered:
 
   - Web Scraping / Streaming
   - Shiny basics
   - Interactive (and reactive) Maps, Charts, and Tables
   - Mouse and Keyboard listeners
-  - UI formating
+  - UI formatting
   - Dashboard publishing
 
 ## Table of Contents:
 
-### 00: [Setting up your Project](./docs/00_setting_up_the_project.html)
+### 00: [Setting up your Project](https://mikejohnson51.github.io/COVID-19-dashboard/00_setting_up_the_project.html)
 
-### 01: [Getting Data](01_getting_data.html)
+### 01: [Getting Data](https://mikejohnson51.github.io/COVID-19-dashboard/01_getting_data.html)
 
-### 02: [Building dynamic Maps](02_maps.html)
+### 02: [Building dynamic Maps](https://mikejohnson51.github.io/COVID-19-dashboard/02_maps.html)
 
-### 03: [Building dynamic Graphs](03_charts.html)
+### 03: [Building dynamic Graphs](https://mikejohnson51.github.io/COVID-19-dashboard/03_charts.html)
 
-### 04: [Building dynamic Tables](04_tables.html)
+### 04: [Building dynamic Tables](https://mikejohnson51.github.io/COVID-19-dashboard/04_tables.html)
 
-### 05: [Shiny Basics](05_shiny_basics.html)
+### 05: [Shiny Basics](https://mikejohnson51.github.io/COVID-19-dashboard/05_shiny_basics.html)
 
-### 06: [Adding a Map](06_shiny_maps.html)
+### 06: [Adding a Map](https://mikejohnson51.github.io/COVID-19-dashboard/06_shiny_maps.html)
 
-### 07: [Adding a Graph](07_shiny_graphs.html)
+### 07: [Adding a Graph](https://mikejohnson51.github.io/COVID-19-dashboard/07_shiny_graphs.html)
 
-### 08: [Adding a Table](08_shiny_tables.html)
+### 08: [Adding a Table](https://mikejohnson51.github.io/COVID-19-dashboard/08_shiny_tables.html)
 
-### 09: [Adding an autofill search bar](09_autocomplete_window.html)
+### 09: [Adding an autofill search bar](https://mikejohnson51.github.io/COVID-19-dashboard/09_autocomplete_window.html)
 
-### 10: [Publishing your app](docs/10_publish.html)
+### 10: [Publishing your app](https://mikejohnson51.github.io/COVID-19-dashboard/10_publish.html)

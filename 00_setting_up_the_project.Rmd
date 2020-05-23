@@ -25,13 +25,13 @@ knitr::include_graphics("figures/logos.png")
 
 To create our COVID19-Dashboard we need to create new R project. R projects are useful for ensuring that paths and directories are centralized. To make a new project launch RStudio on your computer. 
 
-If you do not have R and R studio already installed you can find R [here](https://www.r-project.org/). Make sure to get the most up to data version that is not a "pre-release".
+If you do not have R and R studio already installed you can find R [here](https://www.r-project.org/). Make sure to get the most up to date version that is not a "pre-release".
 
 R Studio is an IDE ("Integrated Development Environment") for managing R projects, writing code, and running examples. You can download RStudio [here](https://rstudio.com/products/rstudio/#Desktop). 
 
 Make sure to get the free Desktop version about halfway down the page.
 
-Follow the directions for installing each of those and you a will be set to go!
+Follow the directions for installing each of those and you a will be set to go! Remeber though, that since RStudio runs R, you must install R first `r emo::ji("smile")`
 
 ## Launch R Studio
 
