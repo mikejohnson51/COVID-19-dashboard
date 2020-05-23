@@ -45,4 +45,4 @@ To complete this labs work your way through each section starting from building 
 ### 07: [Adding a Graph](07_shiny_graphs.html)
 ### 08: [Adding a Table](08_shiny_tables.html)
 ### 09: [Adding an autofill search bar](09_autocomplete_window.html)
-### 10: [Publishing your app](docs/10_publish.html)
+### 10: [Publishing your app](10_publish.html)
