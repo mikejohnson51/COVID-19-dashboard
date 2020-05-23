@@ -1,5 +1,5 @@
 
-# Lab Activity for Geography 183 <img src="figures/ucsb_logo.png" width=160 height = 120 align="right" />
+# Lab Activity for Geography 183 <img src="data/ucsb_logo.png" width=160 height = 120 align="right" />
 
 ## Building a COVID-19 Shiny Dashboard
 
