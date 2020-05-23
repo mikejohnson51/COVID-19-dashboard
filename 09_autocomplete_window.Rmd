@@ -16,7 +16,9 @@ knitr::opts_chunk$set(echo = TRUE,
                       eval = FALSE)
 ```
 
-The last [section](08_shiny_tables.Rmd) we finalized the base Shiny Application. In this section we will add an advanced capability. This will be an auto complete text-box that allows users to select county names that are abel to modify the global FIP variable and change the interactive components.
+The last [section](08_shiny_tables.Rmd) we finalized the base Shiny Application. In this section we will add an advanced capability. 
+
+This will be an auto complete text-box that allows users to enter/find county names that are can modify the global FIP variable and change the interactive components.
 
 # Extending the UI:
 
@@ -55,24 +57,24 @@ As you see above, we do this with the `structure` call where the first input (`t
 
 ## Extending the Server
 
-In the server function we are going to add an **observer**. This time we are not observing an event, rather an input object. The *expression* we will observe is to see if `auto` is either `""` (the default) or `NULL`. If it is, then the our reactive observer will return NULL. 
+In the server function we are going to add an **observer**. This time we are not observing an event, but an input object. The *expression* we will observe is to see if `auto` is either `""` (the default). If it is, then the our reactive observer will return NULL. 
 
-Otherwise, the observer will initate the same workflow we defined in our mouseclick event observer. Specifically,the global FIP is overridden, the covidmap zoom is updated, the covid_chart is re-generated, and a Wikipedianew table is visualized.
+Otherwise, the observer will initate the same workflow we defined in our mouseclick event observer. Specifically,the global FIP will overridden by the value returned from the text box, the covidMap zoom is updated, the covidChart is re-generated, and a new Wikipedia table is visualized.
 
 ```{r}
-
 observe( 
     if(input$auto == ""){ 
       NULL 
     } else {
       FIP <<- input$auto
-      leafletProxy("covidmap") %>% zoom_to_county(counties, FIP)
-      output$covid_chart <- renderDygraph({ make_graph(covid19, FIP) })
-      output$covid_table      <- renderDT({ make_table(today, FIP) })
+      leafletProxy("covidMap") %>% zoom_to_county(counties, FIP)
+      output$covidChart <- renderDygraph({ make_graph(covid19, FIP) })
+      output$covidTable <- renderDT({ make_table(today, FIP) })
     }
   )
 ```
 
+A full `app.R` file up to this point can be found [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/example_08.R)
 
 ## Conclusion
 

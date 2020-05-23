@@ -433,7 +433,7 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>In the last <a href="05_shiny_basics.html">section</a> we set up the basic skeloton of a Shiny Application. In this section wwe ill demonstrate how to add your leaflet <code>basemap</code> to the Shiny <code>ui</code> and how <code>observeEvent</code> can be used to record how the mouse cursor interacts with the <code>leaflet</code> map.</p>
+<p>In the last <a href="05_shiny_basics.html">section</a> we set up the basic skeleton of a Shiny Application. In this section we will demonstrate how to add your leaflet <code>basemap</code> to the Shiny <code>ui</code> and how <code>observeEvent</code> can be used to record how the mouse cursor interacts with the <code>leaflet</code> map.</p>
 <div id="extending-the-ui" class="section level2">
 <h2>Extending the UI</h2>
 <p>Here is the UI object we ended with in the last section with a few modifications.</p>
@@ -444,33 +444,32 @@ $(document).ready(function () {
 <span id="cb1-5"><a href="#cb1-5"></a>  <span class="co"># Sidebar layout output definitions ----</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a>  <span class="kw">sidebarPanel</span>(</span>
 <span id="cb1-7"><a href="#cb1-7"></a>    <span class="co"># Output: Message ----</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covid_message&quot;</span>, <span class="dt">container =</span> h4)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covidMessage&quot;</span>, <span class="dt">container =</span> h4)</span>
 <span id="cb1-9"><a href="#cb1-9"></a>  ),</span>
 <span id="cb1-10"><a href="#cb1-10"></a></span>
 <span id="cb1-11"><a href="#cb1-11"></a>  <span class="co"># Main panel for displaying outputs ----</span></span>
 <span id="cb1-12"><a href="#cb1-12"></a>  <span class="kw">mainPanel</span>(</span>
 <span id="cb1-13"><a href="#cb1-13"></a>    <span class="co"># Output: Map ----</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidmap&#39;</span>)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidMap&#39;</span>)</span>
 <span id="cb1-15"><a href="#cb1-15"></a>  )</span>
 <span id="cb1-16"><a href="#cb1-16"></a>)</span></code></pre></div>
-<p>Notablly, we’ve added a <code>sidebarPanel</code> and <code>mainPanel</code> to the <code>fluidPage</code> to define how space on the page is distributed.</p>
-<p>In the <code>sidebarPanel</code> we are going to display <code>textOutput</code>. We call the object it will display <code>covid_message</code>. The container fuction generates an HTML element to hold the text defined by the ‘h3’ HTML tag (think of this as the size of the text).</p>
-<p>It is important here to recongnize that <code>covid_message</code> is a variable containing a rendered text (from the output list), and <strong>not</strong> a text string itself. We will define what <code>covid_message</code> equals in the server function and the UI will react to changes in variable.</p>
-<p>In the <code>mainPanel</code>, we are going to display a leaflet object (from the output list) called <code>covidmap</code>. Here agian the UI only displays the <code>covidmap</code> object. All rendering, and modification of <code>covidmap</code> <strong>MUST</strong> occur in the server function.</p>
+<p>Notably, we’ve added a <code>sidebarPanel</code> and <code>mainPanel</code> to the <code>fluidPage</code> to define how space on the page is distributed.</p>
+<p>In the <code>sidebarPanel</code> we are going to display <code>textOutput</code>. We call the object it will display <code>covidMessage</code>. The container parameter generates an HTML element to hold the text defined by the ‘h4’ HTML tag (think of this as the size of the text).</p>
+<p>It is important here to recognize that <code>covidMessage</code> is a variable containing text stored in the output list, and <strong>not</strong> a text string itself. We will define <code>covidMessage</code> in the server function. The UI then is only reacting the the <code>covidMessage</code> variable in the server function.</p>
+<p>In the <code>mainPanel</code>, we are going to display a leaflet object (also from the output list) called <code>covidMap</code>. Here again, the UI only displays the <code>covidMap</code> object. All rendering, and modification of <code>covidMap</code> <strong>MUST</strong> occur in the server function.</p>
 </div>
 <div id="extending-the-server-function" class="section level2">
 <h2>Extending the server function</h2>
-<p>Last time we set up our server function with parmeters called <code>input</code> and <code>output</code>. In a general sense:</p>
+<p>Last time we set up our server function with parameters called <code>input</code> and <code>output</code>. In a general sense:</p>
 <ul>
 <li><strong>input</strong> is a list of things defined in the <code>UI</code> and passed to the <code>server</code></li>
 <li><strong>output</strong> is a list of things generated in the <code>server</code> that are passed to the <code>UI.</code></li>
 </ul>
 <p>Keeping your <code>input</code> and <code>output</code> lists aligned is what allows <code>Shiny</code> to generate reactive web applications.</p>
-<p>Lets set up our server function to specify what the <code>covid_message</code> and <code>covidmap</code> actually store. We will save these to the <code>output</code> list so that the UI can make use of them! We save the rendered object to the map slot of the output list Slots are accessed with the <code>$</code> symbol.</p>
-<p>First, we must define a intial <code>reativeValue</code> to store the <code>covid_message.</code> In the scope of the reactiveValues list this object is called <code>msg</code>.</p>
-<p>When you read a value from a reactiveValues list, the calling reactive expression takes a reactive dependency on that value, and when you write to it, it notifies any reactive functions that depend on that value.</p>
-<p>Next, we create the <code>covidmap</code> obejct by rendering our basemap as a Leaflet object and saving it directly to the output list in the <code>covidmap</code> slot of the output list.</p>
-<p>Last, we render our msg variable as Text and save it to the <code>covid_message</code> slot of the output list.</p>
+<p>Lets set up our server function to specify what <code>covidMessage</code> and <code>covidMap</code> actually store. We will save these to the <code>output</code> list so that the UI can make use of them! First, we must define an initial <code>reativeValue</code> to store the <code>covidMessage.</code> In the scope of the reactiveValues list we call this object <code>msg</code>, and store all reactiveValues (in this case just <code>msg</code>) as object <code>v</code>.</p>
+<p>Next, we create the <code>covidMap</code> by rendering our basemap as a leaflet object and saving it directly to the output list as <code>covidMap</code>.</p>
+<p>Last, we render our reactive <code>msg</code> variable as Text and save it to the <code>covid_message</code> slot of the output list.</p>
+<p>Remember, only the render map and text object can be shown in the UI!</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="co"># Global variables initialized ----</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>  v   &lt;-<span class="st"> </span><span class="kw">reactiveValues</span>(<span class="dt">msg =</span> <span class="st">&quot;First Shiny!!!&quot;</span>)</span>
@@ -484,32 +483,31 @@ $(document).ready(function () {
 </div>
 <div id="run-the-app" class="section level2">
 <h2>Run the App:</h2>
-<p><img src="figures/shiny-01.png" /> Great! We see our leaflet basemap is rendered, as is our default message “First Shiny!!!”. Now lets see if we can use the reactive capabilites of Shiny to modify the covid_message based on where the mouse cursor is on the Leaflet map.</p>
+<p><img src="figures/shiny-01.png" /> Great! We see our leaflet basemap is rendered, as is our default message “First Shiny!!!”. Now lets see if we can use the reactive capabilities of Shiny to modify the <code>covidMessage</code> based on where the mouse cursor is on the <code>covidMap.</code></p>
 </div>
 <div id="engaging-a-mouse-observer-mouseover-and-mouseout" class="section level2">
 <h2>Engaging a Mouse Observer (Mouseover and Mouseout)</h2>
-<p>This will be our fist detailed exploration of how Shiny can engage with user actions. Here we want to <code>observe</code> what the mouse is doing in the UI and pass information from the cursor back to server function through the <code>input</code> list.</p>
-<p>In the server function, lets start by observing an event(<code>observeEvent</code>). The event we want to listen to is the mouse cursors interaction with the map object.</p>
-<p>Now the mouse can do a lot of things with respect to a leaflet map, it can <em>mouseover</em>, <em>mouseout</em>, and <em>mouseclick</em>. When these actions occur with map markers, they are able to store the id of the marker. Remember that the marker ID was defined as the FIPS code in our basemap() function (see layerID = ~fips). That was why that variable was so critcial!</p>
-<p>Generally our goal is that everytime the mouse cursor passes <em>over</em> a <em>marker</em>, it will change the UI message to something specfic to that marker.</p>
-<p>To do this, in our <code>observeEvent</code> we will start listening the <code>input</code> list. The slot we want to observe is the covidmap, and more specifically, the <code>covidmap_marker</code>. In terms of the mouse action we want to listen for, we want to observe when the mouse movers over (mouseover) a marker.</p>
+<p>This will be our fist detailed exploration of how Shiny can engage with user actions. Here we want to <code>observe</code> what the mouse is doing in the UI and pass information from the cursor to server function through the <code>input</code> list.</p>
+<p>In the server function, lets start by observing an event (<code>observeEvent</code>). The event we want to observe is the mouse cursors interaction with the map object.</p>
+<p>Now the mouse can do a lot of things with respect to a leaflet map, it can <em>mouseover</em>, <em>mouseout</em>, and <em>mouseclick</em>. When these actions occur with map markers, they are able to store the id of the marker. Remember that the marker ID was defined as the FIPS code in our <code>basemap</code> function (layerID = ~fips). That was why that variable was so critical! Therefore, the interaction between the map and mouse is expressed as the FIP code of the map marker.</p>
+<p>Generally our goal is that every time the mouse cursor passes <em>over</em> a <em>marker</em>, it will change the <code>covidMessage</code> to something specific to that marker.</p>
+<p>To do this, in our <code>observeEvent</code> we will listen to the <code>input</code> list. The object we want to observe is the <code>covidMap</code>, and more specifically, the <code>covidMap_marker</code>. In terms of the action we want to listen for, we observe as the mouse moves over (mouseover) a marker.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Add this to the server function</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidmap_marker_mouseover, {</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidMap_marker_mouseover, {</span>
 <span id="cb3-3"><a href="#cb3-3"></a>  ...</span>
 <span id="cb3-4"><a href="#cb3-4"></a>}</span></code></pre></div>
-<p>So in the observer we are observing the covid_map_marker_mouseover, at anytime we can extract the id of the marker from the covid_map_marker_mouseover. Remember that the marker ID was defined as the FIPS code in our base_map() function (see layerID = ~fips). We use this id/FIPS code to subset the ‘today’ dataset and extract the prettified call we added:</p>
-<p>We then change the reactive message in the v$msg to tell us the county/state pair the mouse is over, which will be rendered as text in the server function, and then passed to the UI to display.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidmap_marker_mouseover, {</span>
+<p>So in this observer we are observing the <code>covidMap_marker_mouseover</code>, and at anytime, we can extract the id of the marker from the <code>covidMap_marker_mouseover</code>. Remember that the marker ID was defined as the FIPS code in our basemap function. We use this id/FIP code to subset the ‘today’ dataset and extract the name attribute we added. We then use the subset data to refine the reactive message in the <code>v$msg</code> that will be rendered and passed to the UI. Let’s see this in action!</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidMap_marker_mouseover, {</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    txt =<span class="st"> </span><span class="kw">filter</span>(today, fips <span class="op">==</span><span class="st"> </span>input<span class="op">$</span>covidmap_marker_mouseover<span class="op">$</span>id) </span>
 <span id="cb4-3"><a href="#cb4-3"></a>    v<span class="op">$</span>msg &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;Mouse is over: &quot;</span>, txt<span class="op">$</span>name, <span class="st">&quot; (&quot;</span>, txt<span class="op">$</span>cases, <span class="st">&quot; cases)&quot;</span>)</span>
 <span id="cb4-4"><a href="#cb4-4"></a>  })</span></code></pre></div>
-<p>But what happens when the mouse leaves the marker? Do we want the message to stay? Certainly not! So, lets add anthor listener with the</p>
-<p># So what happen once our mouse moves away from a marker? Well, we listen for that by observing the event of # the MOUSE, moving OUT (mouseout), of a MARKER, on a MAP object shown in the UI. # When this happens we change the reactive map message which is then shown in the UI</p>
+<p>But what happens when the mouse leaves the marker? Do we want the message to stay? Certainly not! So, lets add another listener that observes the mount moving OUT (mouseout), of a MARKER, on a MAP object shown in the UI. When this happens we change the reactive map message which is then shown in the UI</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidmap_marker_mouseout, {</span>
 <span id="cb5-2"><a href="#cb5-2"></a>  v<span class="op">$</span>msg &lt;-<span class="st"> &quot;Mouse is over: &quot;</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a>})</span></code></pre></div>
 <p>With those two new observers in you server function, lets once again run our Shiny App:</p>
 <p><img src="figures/map_mouseover.gif" /></p>
+<p>A full <code>app.R</code> file up to this point can be found <a href="https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/example_06.R">here</a></p>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>

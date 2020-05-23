@@ -433,7 +433,8 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>The last <a href="08_shiny_tables.Rmd">section</a> we finalized the base Shiny Application. In this section we will add an advanced capability. This will be an auto complete text-box that allows users to select county names that are abel to modify the global FIP variable and change the interactive components.</p>
+<p>The last <a href="08_shiny_tables.Rmd">section</a> we finalized the base Shiny Application. In this section we will add an advanced capability.</p>
+<p>This will be an auto complete text-box that allows users to enter/find county names that are can modify the global FIP variable and change the interactive components.</p>
 <div id="extending-the-ui" class="section level1">
 <h1>Extending the UI:</h1>
 <p>First lets add a text box to our UI. Now, we don’t want to make users guess what their options are, so, we will add an autofilling capability that shows valid selections as a user types.</p>
@@ -464,18 +465,19 @@ $(document).ready(function () {
 <p>As you see above, we do this with the <code>structure</code> call where the first input (<code>today$fips</code>) defines what is returned to <code>auto</code> while the name input (<code>today$name</code>) defines the options users can search and select.</p>
 <div id="extending-the-server" class="section level2">
 <h2>Extending the Server</h2>
-<p>In the server function we are going to add an <strong>observer</strong>. This time we are not observing an event, rather an input object. The <em>expression</em> we will observe is to see if <code>auto</code> is either <code>""</code> (the default) or <code>NULL</code>. If it is, then the our reactive observer will return NULL.</p>
-<p>Otherwise, the observer will initate the same workflow we defined in our mouseclick event observer. Specifically,the global FIP is overridden, the covidmap zoom is updated, the covid_chart is re-generated, and a Wikipedianew table is visualized.</p>
+<p>In the server function we are going to add an <strong>observer</strong>. This time we are not observing an event, but an input object. The <em>expression</em> we will observe is to see if <code>auto</code> is either <code>""</code> (the default). If it is, then the our reactive observer will return NULL.</p>
+<p>Otherwise, the observer will initate the same workflow we defined in our mouseclick event observer. Specifically,the global FIP will overridden by the value returned from the text box, the covidMap zoom is updated, the covidChart is re-generated, and a new Wikipedia table is visualized.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">observe</span>( </span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="cf">if</span>(input<span class="op">$</span>auto <span class="op">==</span><span class="st"> &quot;&quot;</span>){ </span>
 <span id="cb2-3"><a href="#cb2-3"></a>      <span class="ot">NULL</span> </span>
 <span id="cb2-4"><a href="#cb2-4"></a>    } <span class="cf">else</span> {</span>
 <span id="cb2-5"><a href="#cb2-5"></a>      FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>auto</span>
-<span id="cb2-6"><a href="#cb2-6"></a>      <span class="kw">leafletProxy</span>(<span class="st">&quot;covidmap&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
-<span id="cb2-7"><a href="#cb2-7"></a>      output<span class="op">$</span>covid_chart &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid19, FIP) })</span>
-<span id="cb2-8"><a href="#cb2-8"></a>      output<span class="op">$</span>covid_table      &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_table</span>(today, FIP) })</span>
+<span id="cb2-6"><a href="#cb2-6"></a>      <span class="kw">leafletProxy</span>(<span class="st">&quot;covidMap&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>      output<span class="op">$</span>covidChart &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid19, FIP) })</span>
+<span id="cb2-8"><a href="#cb2-8"></a>      output<span class="op">$</span>covidTable &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_table</span>(today, FIP) })</span>
 <span id="cb2-9"><a href="#cb2-9"></a>    }</span>
 <span id="cb2-10"><a href="#cb2-10"></a>  )</span></code></pre></div>
+<p>A full <code>app.R</code> file up to this point can be found <a href="https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/example_08.R">here</a></p>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>

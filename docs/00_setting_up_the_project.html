@@ -440,16 +440,17 @@ $(document).ready(function () {
 <p>If you do not have R and RStudio already installed you can find R <a href="https://www.r-project.org/">here</a>. Make sure to get the most up to date version that is not a “pre-release”.</p>
 <p>RStudio is an IDE (“Integrated Development Environment”) for managing R projects, writing code, and running examples. You can download RStudio <a href="https://rstudio.com/products/rstudio/#Desktop">here</a>.</p>
 <p>Make sure to get the free Desktop version about halfway down the page.</p>
-<p>Follow the directions for installing each of those and you a will be set to go! Remeber though, that since RStudio runs R, you must install R first 😄</p>
+<p>Follow the directions for installing each of those and you a will be set to go! Remember though, that since RStudio runs R, you must install R first 😄</p>
 </div>
 <div id="launch-r-studio" class="section level2">
 <h2>Launch R Studio</h2>
-<p>With R and RStudio installed, launch RStudio. Here we will be creating a new project by selecting:</p>
+<p>With R and RStudio installed, launch RStudio where we will create a new project by selecting:</p>
 <p><code>File -&gt; New Project -&gt; New Directory -&gt; Shiny Web Application</code></p>
-<p>When prompted, fill in the project name “e.g. COVID19-Dashboard” and tell RStudio where to put your project on your computer (think of your project as a big folder where everything will be stored and linked). You should have something like this:</p>
+<p>When prompted, fill in the project name “e.g. COVID19-Dashboard” and tell RStudio where to put your project on your computer (think of your project as a big folder where everything will be stored). You should have something like this:</p>
 <p><img src="figures/create_project.png" width="400px" style="display: block; margin: auto;" /></p>
+<p>Where the subdirectory is unique to your computer.</p>
 <p>When finished hit, <strong>Create Project!</strong></p>
-<p>After a moment a new session window will open that looks like the following, although your tabs may be in different sections…</p>
+<p>After a moment a new session window will open that looks like the following, although your tabs may be in different sections. The general functionality will be present.</p>
 <p><img src="figures/structure.png" width="600px" style="display: block; margin: auto;" /></p>
 <p>Notice that your session is linked to your project (blue box).</p>
 <p>In the lower right hand corner of the session (red box), you have a the <em>Environment</em> tab that shows all the active objects in your session. The <em>files</em> tab shows all the files and folders in your default (project) work space as in a PC/Mac finder/explorer window. The <em>plots</em> tab will show all your graphs.</p>
@@ -474,7 +475,7 @@ $(document).ready(function () {
 <p>New R scripts can be created by selecting:</p>
 <p><code>File -&gt; New File -&gt; R Script</code></p>
 <p>Or hitting <code>CMND+SHIFT+N</code> or <code>CTR+SHIFT+N</code></p>
-<p>Once a new <code>Untitled.R</code> file is opened, you should save it to the desired location. In our case your top-level project directory (see below):</p>
+<p>Once a new <code>Untitled.R</code> file is opened, you should save it to the desired location. In our case your top-level project directory. Do ahead and make a new script called <code>app.R</code> and <code>helpers.R</code> (see below):</p>
 <p><img src="figures/project.png" width="400px" style="display: block; margin: auto;" /></p>
 </div>
 <div id="getting-the-needed-libraries" class="section level3">
@@ -482,31 +483,18 @@ $(document).ready(function () {
 <p>R comes loaded with many base packages. However none of these help us build interactive web applications using spatial data. Because of this, we will need to install a number of packages.</p>
 <p>In R, packages can be installed from CRAN (Comprehensive R Archive Network) using the following pattern:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">&#39;dplyr&#39;</span>)</span></code></pre></div>
-<p>Where, ‘dplyr’ is the name of the package we want to install. So what exactly is a package?</p>
-<p>Think of a package as a set of functions that others have written to make your life easier.</p>
+<p>Where, <code>dplyr</code> is the name of the package we want to install. Think of a package as a set of functions that others have written to make your life easier.</p>
 <p><strong>IMPORTANT:</strong> installing a package only downloads the source code onto your computer. To actually use it, you’ll need to attach/load the package using the <code>library()</code> call.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
-<p>Open your <code>helpers.R</code> file from the files tab and copy the following into the top of the file. This will ensure that you download and</p>
+<p>Lets makes sure that you have all of the packages needed for this assignment. Please copy the following code into you R console and hit ENTER. The code is also available for you as an .R file <a href="https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/installs.R">here</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 1. Install missing packages ----</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;dygraphs&quot;</span>, <span class="st">&quot;DT&quot;</span>, <span class="st">&#39;shiny&#39;</span>)</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>new.packages &lt;-<span class="st"> </span>list.of.packages[<span class="op">!</span>(list.of.packages <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>])]</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="cf">if</span>(<span class="kw">length</span>(new.packages)) <span class="kw">install.packages</span>(new.packages)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;sf&quot;</span>, </span>
+<span id="cb3-3"><a href="#cb3-3"></a>                      <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;dygraphs&quot;</span>, <span class="st">&quot;DT&quot;</span>, </span>
+<span id="cb3-4"><a href="#cb3-4"></a>                      <span class="st">&#39;shiny&#39;</span>, <span class="st">&#39;rvest&#39;</span>, <span class="st">&quot;dqshiny&quot;</span>, </span>
+<span id="cb3-5"><a href="#cb3-5"></a>                      <span class="st">&quot;shinythemes&quot;</span>, <span class="st">&quot;rsconnect&quot;</span>)</span>
 <span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># 2. Load packages ----</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># Data Manipulation</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="kw">library</span>(dplyr)    <span class="co"># data.frames</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="kw">library</span>(sf)       <span class="co"># Spatial</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># Interactive Data Viz</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="kw">library</span>(leaflet)  <span class="co"># Maps</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="kw">library</span>(dygraphs) <span class="co"># Charts</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="kw">library</span>(DT)       <span class="co"># tables</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co"># Shiny</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="kw">library</span>(shiny)    <span class="co"># Starting Reactivity</span></span></code></pre></div>
-<p>Run all the code by highlighting and hitting <code>CMND+ENTER</code> (Mac) or <code>CTRL+ENTER</code> (Windows).</p>
-<p>Alternatively you can run a linea one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
+<span id="cb3-7"><a href="#cb3-7"></a>new.packages &lt;-<span class="st"> </span>list.of.packages[<span class="op">!</span>(list.of.packages <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>])]</span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="cf">if</span>(<span class="kw">length</span>(new.packages)) <span class="kw">install.packages</span>(new.packages)</span></code></pre></div>
 <p>The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.</p>
 <p>Along the way you will be asked to answer a few questions:</p>
 <p>Do you want to restart RStudio after?</p>
@@ -514,6 +502,29 @@ $(document).ready(function () {
 <p>Do you want to install from source the package which needs compilation? (Yes/no/cancel)?</p>
 <p>This has to do with the sf package. For now, go ahead and type no to avoid potential build issues.</p>
 <p><strong>no</strong></p>
+</div>
+<div id="running-lines-of-code" class="section level3">
+<h3>4. Running lines of Code</h3>
+<p>Great! Assuming that everything went as planned. You should have all the source code you need for this project on your local computer. Now lets take a minute to see how to write a R script. Go ahead and open your helpers.R file.</p>
+<p>In this files go ahead and paste the following:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># 2. Load packages ----</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Data Manipulation</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">library</span>(dplyr)    <span class="co"># data.frames</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">library</span>(sf)       <span class="co"># Spatial</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># Interactive Data Viz</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="kw">library</span>(leaflet)  <span class="co"># Maps</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">library</span>(dygraphs) <span class="co"># Charts</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">library</span>(DT)       <span class="co"># tables</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="kw">library</span>(rvest)    <span class="co"># webscraping</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co"># Shiny</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="kw">library</span>(dqshiny)    <span class="co"># auto complete</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="kw">library</span>(shiny)       <span class="co"># Starting Reactivity</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="kw">library</span>(shinythemes) <span class="co"># themes</span></span></code></pre></div>
+<p>Run all the code by highlighting and hitting <code>CMND+ENTER</code> (Mac) or <code>CTRL+ENTER</code> (Windows).</p>
+<p>Alternatively you can run a lines one-by-one using the same keyboard shortcuts, or the <code>RUN</code> icon in the top right of the text editing window.</p>
+<p>After running each line and making sure you can attach all packages, go ahead and save you file. The painful stuff is now over and we are ready to start building our application!</p>
 </div>
 <div id="conclusion" class="section level3">
 <h3>4. Conclusion</h3>

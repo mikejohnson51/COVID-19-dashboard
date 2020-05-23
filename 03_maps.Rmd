@@ -1,7 +1,6 @@
 ---
 title: "02: Interactive Data Viz"
 subtitle: "Leaflet Maps"
-author: jmj00@ucsb.edu
 output: 
   html_document:
     highlight: pygment
@@ -21,28 +20,23 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 
-In the last [section](02_graphs.html) we created two functions for getting the data for our COVID-19-Dashboard. This section will focus on building interactive maps. To test these things, open a new test script. At the top of it attach the needed libraries and load your data as covered in the last section:
+In the last [section](02_graphs.html) we made interactive line charts. This section will focus on building interactive maps. To play with the new material these things, open a test script. At the top of it attach the source your helpers file and load your data as covered in the last section:
 
 ```{r, eval = TRUE}
 source('./helpers.R')
-covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+covid19 = read_covid19()
 today   = today_centroids(counties, covid19)
 ```
 
-Leaflet is one of the most popular open-source JavaScript libraries for interactive maps. It’s used by websites like The New York Times, The Washington Post,  GitHub and Flickr, as well as GIS specialists like OpenStreetMap, Mapbox, and CartoDB. The `leaflet` R package makes it easy to integrate and control Leaflet maps in R. An exhaustive list of functionality and examples can be found [here](https://rstudio.github.io/leaflet/).
+Leaflet is one of the most popular open-source JavaScript libraries for interactive maps. It’s used by websites like The New York Times, The Washington Post,  GitHub and Flickr, as well as GIS systems like OpenStreetMap, Mapbox, and CartoDB. The `leaflet` R package makes it easy to integrate and control Leaflet maps in R. An exhaustive list of functionality and examples can be found [here](https://rstudio.github.io/leaflet/).
 
-Our goal for this section is to make a function, called `basemap` that will plot  county centroids with sizes based on there case count on a [tiled slippy map](https://en.wikipedia.org/wiki/Tiled_web_map).
+Our goal for this section is to make a function, called `basemap` that will plot our county centroids (`today`) - with sizes based on case count - on a [tiled slippy map](https://en.wikipedia.org/wiki/Tiled_web_map).
 
-We will create a second function - `zoom_to_county` - that zooms to a specific county based on a user supplied FIP code. The following code will get you a basic example that you can customize and tweak. 
+We will create a second function - `zoom_to_county` - that zooms to a specific county based on a FIP code. The following code will get you a basic example that you can customize and tweak. 
 
 ## Web Tiles
 
-Lets start by initialize a basic leaflet map. We start by giving our `today` data as the data input to the the generic `leaflet` call. We pass that map object to the `addProviderTiles` call. In this example we add the CartoDB.DarkMatter tileset but you can pick any tile set by name from the extensive leaflet provides found [here](https://leaflet-extras.github.io/leaflet-providers/preview/index.html). Finally we pass the map object with defined tiles to the `addScaleBar` function and ask for a scale bar in the bottom left of the map. The results look like:
-
-```{r}
-#Total Option:
-length(providers)
-```
+Lets start by initializing a basic `leaflet` map. We start by giving our `today` data as the data input to the the generic `leaflet` call. We pass that map object to the `addProviderTiles` call. In this example we add the CartoDB.DarkMatter tileset but you can pick any tile set by name from the extensive leaflet provides found [here](https://leaflet-extras.github.io/leaflet-providers/preview/index.html). Finally we pass the map object with defined tiles to the `addScaleBar` function and ask for a scale bar in the bottom left of the map. The results look like:
 
 ```{r}
 leaflet(data = today) %>%
@@ -53,7 +47,7 @@ leaflet(data = today) %>%
 
 ```
 
-Note that our objects are not mapped! This is because we have not told `leaflet` how to represent spatial input To do so we will pass our map object to the `addCircleMarkers`:
+Note that our objects are not mapped! This is because we have not told `leaflet` how to represent spatial input yet. To do so we will pass our map object to `addCircleMarkers`. The effect will the that circleMarkers will be added to - or layered on - the existing map:
 
 ```{r}
 leaflet(data = today) %>%
@@ -62,10 +56,10 @@ leaflet(data = today) %>%
   addCircleMarkers()     
 ```
 
-*Great!* They are now mapped but are pretty ugly. Lets make our map more pleasing by defining a color pallete and adding aestehtic parameters:
+*Great!* They are now mapped but are pretty ugly. Lets make our map more pleasing by defining a color pallete, picking a better basemap, and adding aesthetic parameters. You can try any of the following pallete names [here](https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html) or one of: "viridis", "magma", "inferno", or "plasma".
 
 ```{r}
-# define a unique color pallete
+# define a unique color pallete using the name you select
 pal <- colorNumeric("inferno", domain = today$size, n = 100)
   
 map = leaflet(data = today) %>%
@@ -83,14 +77,15 @@ map = leaflet(data = today) %>%
 map
 ```
 
-
-You job is to make this map your own by modifying the basemap,  color pallete, and design parameters in `addCircleMarkers.` The only thing that CANNOT be modified is the `layerID`. You will see why latter on.
+You job is to make this map your own by modifying the basemap, color pallete, and design parameters in `addCircleMarkers.` The only thing that CANNOT be modified is the `layerID`. You will see why latter on.
 
 ## Map Modifiers
 
-Here we are going to get a bit complicatd `r emo::ji("smile")`. What we want to do it define a function that will "zoom" to a defined county on your custom map. It other words, if a user asks about LA county, we want to zoom to LA county and show the county boundaries.
+Here we are going to get a bit complicated `r emo::ji("smile")` but again if you are not feeling it, just focus on exposing yourself to the material and absorbing as much as you personally want to. 
 
-To do this we will make a new function that requires a leaflet map, county boudaries, and a FIP code.
+What we want to do it define a function that will "zoom" to a county county based on a FIP code. In other words, if a user asks about LA county, we want to zoom to LA county and show the county boundaries.
+
+To do this we will make a new function that requires a leaflet map, county boundaries, and a FIP code we will call this function `zoom_to_county`
 
 ```{r}
 
@@ -123,22 +118,22 @@ zoom_to_county = function(map, counties, FIP){
 ```
 
 
-Go ahead a copy the above code. Dont worry about changing any of it except for the way you want your Polygon to show up on the map. These are the parameters in the `addPolygon` method. 
+Go ahead a copy the above code. Don't worry about changing any of it except for the way you want your Polygon to show up on the map. These are the parameters in the `addPolygon` method (e.g. should the color be `red` and the fillColor `white`??) 
 
-Once completed, you can pass yourmap object to this new function to have you map zoom!
+Once completed, run the function to save it and then, you can pass your map object to this new function to zoom your map!
 
 ```{r}
+## zoom to LA
 zoom_to_county(map, counties, 6037)
 ```
 
-Lets add these two functions to our `helpers.R`. They might look something like this but should make use of 
-your personal touches and aesthetics!
+Lets add these new functions to our `helpers.R`. They might look something like this but should make use of 
+your personal touches and aesthetics! Note that we added a legend that you can take, ignore, or modify!
 
 ```{r, eval = FALSE}
 
 basemap = function(today){
   pal <- colorNumeric("inferno", domain = today$size, n = 50)
-  pal2 <- colorNumeric("inferno", domain = today$cases, n = 50)
   
   leaflet(data = today) %>%
     addProviderTiles('CartoDB.Positron') %>%
@@ -182,4 +177,4 @@ basemap(today)
 
 ## Conclusion
 
-Fantastic, now we have a function for making a map from our centroid data. Lets move to the next [section](04_tables.html) where we will make interactive table of web-scraped Wikipedia data using the `DT` package. 
+Fantastic, now we have a function for making a map and zooming to counties. Lets move to the next [section](04_tables.html) where we will make interactive tables of web-scraped Wikipedia data using the `DT` package. Great job making it to here!!

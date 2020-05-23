@@ -1,12 +1,3 @@
-
-# 1. Install missing packages ----
-list.of.packages <- c("dplyr", "sf", 
-                      "leaflet", "dygraphs", "DT", 
-                      'shiny', 'rvest', "dqshiny", "shinythemes")
-
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
 # 2. Load packages ----
 # Data Manipulation
 library(dplyr)    # data.frames
@@ -29,6 +20,7 @@ counties = readRDS("./data/counties.rds")
 
 # Read in COVID-19 Timesries from URL
 read_covid19 = function(url){
+  url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
   read.csv(url, stringsAsFactors = FALSE) %>% 
     mutate(date = as.Date(date), 
            fips = as.numeric(fips), 
@@ -66,9 +58,8 @@ make_graph  = function(covid19, FIP){
   
 }
 
-
 basemap = function(today){
-  pal <- colorNumeric("inferno", domain = today$size, n = 50)
+  pal <- colorNumeric("inferno", domain  = today$size, n = 50)
   pal2 <- colorNumeric("inferno", domain = today$cases, n = 50)
   
   leaflet(data = today) %>%
@@ -104,10 +95,11 @@ zoom_to_county = function(map, counties, FIP){
     flyToBounds(bounds[1], bounds[2], bounds[3], bounds[4])
 }
 
+## Scrape Wikipeida
 make_table = function(today, FIP){
-  county_here = filter(today, fips == FIP)
+  myfips = filter(today, fips == FIP)
   
-  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name)) %>% 
+  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", myfips$name)) %>% 
     read_html() %>%
     html_nodes("table.infobox") %>% 
     html_table(fill= TRUE) 
@@ -116,16 +108,17 @@ make_table = function(today, FIP){
   ll = l[!l[,1] == l[,2],]
   
   ## Make a datatable from the resulting data.frame and turn off paging
-  datatable(ll,  caption = paste('Wikipedia Information:', county_here$name), 
+  datatable(ll,  caption = paste('Wikipedia Information:', myfips$name), 
             options = list(paging = TRUE, searching = FALSE, ordering = FALSE),
             colnames = rep("", ncol(ll)))
 }
 
+## Build State Ranking table
 make_table2 = function(today, FIP){
-  county_here = filter(today, fips == FIP)
+  myfips = filter(today, fips == FIP)
   
   # Filter todays data to the state of the input FIP
-  mydata = filter(today, state == county_here$state) %>% 
+  mydata = filter(today, state == myfips$state) %>% 
     # Arrange the cases from largest to smallest
     arrange(desc(cases)) %>% 
     # Drop the geometry column
@@ -138,5 +131,6 @@ make_table2 = function(today, FIP){
   
   
   # Make an interactive Table! with a caption
-  datatable(mydata, caption = paste('COVID-19 Statistics', county_here$state, county_here$date), options = list(paging = FALSE, searching = FALSE)) 
+  datatable(mydata, caption = paste('COVID-19 Statistics', myfips$state, myfips$date), options = list(paging = FALSE, searching = FALSE)) 
 }
+

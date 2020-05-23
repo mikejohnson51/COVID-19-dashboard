@@ -1,7 +1,6 @@
 ---
 title: "02: Interactive Data Viz"
 subtitle: "Tables"
-author: jmj00@ucsb.edu
 output: 
   html_document:
     highlight: pygment
@@ -18,57 +17,59 @@ knitr::opts_chunk$set(echo = TRUE,
                       eval = TRUE)
 ```
 
+In the last [section](03_maps.html) we learned how to make interactive maps. In this section we we will learn how to build interactive tables displaying information about our FIP code.
+
+The `DT` package provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables. Documentation and examples for DT can be found [here](https://rstudio.github.io/DT/)
+
+The objective of this section is to build a function called `make_table` that takes a FIP code and builds a nice summary table of information. We are going to look at two options. The first, will return a table of all counties in the same state as the selected FIP code. The second is a bit more complicated (and optional!) but will scrape Wikipedia to get information about the county. Lets take a look at these options!
+
+First though, load your required data as done in the other sections:
 
 ```{r, eval = TRUE}
 ## Load our helper file with our functions
 source('./helpers.R')
-
-## Load the county data
 counties = readRDS("./data/counties.rds")
-
-## Use our functions! from section 1:
-covid19 = read_covid19('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-today = today_centroids(counties, covid19)
+covid19  = read_covid19()
+today    = today_centroids(counties, covid19)
 ```
 
-In the last [section](03_maps.html) we learned how to make interactive charts of our timeseries information giltered by FIP code. In this section we weill learn how to build interactive tables displaying information about our FIP code.
+## Option 1: Sorting a table by state & counts:
 
-The `DT` package provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables. Documentation and examples for DT can be found [here](https://rstudio.github.io/DT/)
+Here we are going to take a FIP code, filter our data, extract the state, and then sort the counties in that state from largest COVID counts to smallest. 
 
-The objective of this section is to build a function called `make_table` that takes a FIP code and build a nice summary table of information. We are going to look at two options. The first, will return a table of all counties in the same state as the selected FIP code. The second is a bit more complicated (and optional!) but will scape Wikipedia to get information about the county. Lets take a look at these options!
-
-## Option 1: Sorting a Table by state & counts
+After that we will only keep the needed columns and calculate a `DeathRate` as a measure of state effectiveness.
 
 ```{r}
-#Intial FIPS
-FIP = 6037
-# Fitler today's data to the FIP
-myfip  = filter(today, fips == FIP)
+# Fitler today's data to the LA County
+myfip  = filter(today, fips == 6037)
 
-# Filter todays data to the state of the input FIP
+# Filter todays data to the state of myfip
 mydata = filter(today, state == myfip$state) %>% 
 # Arrange the cases from largest to smallest
   arrange(desc(cases)) %>% 
 # Drop the geometry column
   st_drop_geometry() %>% 
-# Keep the  County name, cases and deaths
+# Keep only the County name, cases and deaths
   select(County = county, Cases = cases, Deaths = deaths) %>% 
-# Create a new variable called Death Rate
-  mutate(DeathRate = paste0(100* round(Deaths/Cases,2), "%")) %>% 
-  head(20)
+# Create a new variable called Death Rate and save it as a string for printing
+  mutate(DeathRate = paste0(100* round(Deaths/Cases,2), "%"))
 
 
-# Make an interactive Table! with a caption
-datatable(mydata, caption = paste('COVID-19 Statistics', myfip$state, myfip$date), options = list(paging = FALSE, searching = FALSE)) 
+# Make an interactive Table!
+datatable(mydata, 
+          # add a title to the table
+          caption = paste('COVID-19 Statistics', myfip$state, myfip$date)) 
 ```
 
 ## Option 2: Scraping Wikipedia Data
 
+This second option is really cool. Here we are going to use the `name` variable we created to scrape the Wikipedia infobox for information!
+
 ```{r}
 # Filter the input data to the input FIP code
-county_here = filter(today, fips == FIP)
+myfip = filter(today, fips == 6037)
 # Build a Wikipedia URL using the data attribute 'name'
-url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name))
+url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", myfip$name))
   # Steps:
   ## 1. Read the HTML from the URL
   ## 2. Read the Nodes from the HTML page and select the table with a class infobox
@@ -76,47 +77,48 @@ url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name)
 links <- read_html(url) %>%
            html_nodes("table.infobox") %>% 
            html_table(fill= TRUE) 
-
+# Keep only the first element of the list (we dont care about the HTML stuff)
 data = links[[1]]
 
 ## Make a datatable from the resulting data.frame and turn off paging
 datatable(data,  
-          caption = paste('Wikipedia Information:', county_here$name), 
-          options = list(paging = FALSE, searching = FALSE, ordering = FALSE),
+          caption = paste('Wikipedia Information:', myfip$name), 
           colnames = rep("", ncol(data)))
 ```
 
-
-Lets add all of these to the helper.R file which looks something like:
+Super cool! You now know how to scrape information from Wikipedia information boxes for any topics! Lets add one of these to the `helper.R` file:
 
 
 ```{r}
 
 make_table = function(today, FIPS){
-  county_here = filter(today, fips == FIP)
+  myfip = filter(today, fips == FIP)
 
-  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", county_here$name)) %>% 
+  url = paste0('https://en.wikipedia.org/wiki/',  gsub(" ", "_", myfip$name)) %>% 
            read_html() %>%
            html_nodes("table.infobox") %>% 
            html_table(fill= TRUE) 
 
-  l = links[[1]]
+  l = url[[1]]
+  # remove rows where the columns are identical
   ll = l[!l[,1] == l[,2],]
 
 ## Make a datatable from the resulting data.frame and turn off paging
   datatable(ll,  
-          caption = paste('Wikipedia Information:', county_here$name), 
+          caption = paste('Wikipedia Information:', myfip$name),
+          # Turn off some of the interactive components for this table.
           options = list(paging = FALSE, searching = FALSE, ordering = FALSE),
           colnames = rep("", ncol(ll)))
 }
 
 ```
 
-A complete `helpers.R` file can be found [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/helpers.R) for download / copy-paste. 
+A complete `helpers.R` file can be found [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/helpers.R) for download / copy-paste. Just make sure if you chose to use it, that it goes in the right spot in you project, and that you modify a least a few of the aesthetic options in the graph table and maps.
 
-Notice that all the visualization functions we have built rely on our `county`, `timeseries`, or `today` data and a usr defined `FIP code`. From these we can make informative plots, maps and tables. 
+Notice that all the visualization functions we have built rely on our `county`, `timeseries`, or `today` data and a user defined `FIP code`. From these we can make informative plots, maps and tables. 
 
 ## Conclusion
 
-The purpose of our Shiny Application will be to display the map, graph, and table resoruces on a common page, and allow user input (from sources like clicks and text-input) to change the FIP code and the resulting visualizations. To do this we need a speacial type of programing known as 'reative'. Let move on the the next [section](05_shiny_basics.html) to build out the basics of our first Shiny App!
+Congratulations! You finished the first section of this lab! We are now moving on to making our Shiny web applications.
+The purpose of our Shiny Application will be to display the map, graph, and table resources on a common page, and allow user input (from sources like clicks and text-input) to change the FIP code and the resulting visualizations. To do this we need a special type of programming known as 'reactive'. Let move on the the next [section](05_shiny_basics.html) to build out the basics of our first Shiny App!
 

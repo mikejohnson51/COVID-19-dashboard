@@ -433,59 +433,56 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>In the last <a href="04_tables.html">section</a> we built functions that would generate tables (make_table) and charts (make_graph) or modify a map (zoom_to_county) based on a user-provided FIP code. Shiny is a system that lets you build interactive web applications that react to selections and action made in a user interface (UI), based on code that runs in a ‘server’.</p>
+<p>In the last <a href="04_tables.html">section</a> we built functions that would generate tables (make_table) and charts (make_graph) or modify a map (zoom_to_county) based on a user-provided FIP code. Now we will put these elements into a Shiny Application!</p>
+<p>Shiny is a system that lets you build interactive web applications that react to selections and action made in a user interface (UI), based on code that runs in a ‘server’.</p>
 <p>Thus, Shiny applications have two components,</p>
 <ol style="list-style-type: decimal">
-<li>a UI that dictates how things look and stores what a user does (click, add text, move sliders, etc.)</li>
+<li>a UI that dictates how things look and listens to what a user does (click, add text, move sliders, etc.)</li>
 <li>a server function, that runs code and builds visualizations to be shown in the UI.</li>
 </ol>
 <p>When something changes in the UI (e.g. a user clicks on something) the server function is triggered or ‘reacts’.</p>
-<p>For this class project we are going to start with arguably the most a basic user interface - a <code>fluidPage</code>. A <code>fluidPage</code> layout consists of rows and include columns. Rows help ensure that elements appear on the same line (if the browser has adequate width). Columns exist for the purpose of defining how much horizontal space within a 12-unit wide grid elements should occupy. <code>fluidPage</code> layouts scale their components in real-time to fill all available browser width.</p>
+<p>For this project we are going to start with arguably the most a basic user interface - a <code>fluidPage</code>. A <code>fluidPage</code> layout consists of rows and include columns. Rows help ensure that elements appear on the same line (if the browser has adequate width). Columns exist for the purpose of defining how much horizontal space within a 12-unit wide grid elements should occupy. <code>fluidPage</code> layouts scale their components in real-time to fill all available browser width.</p>
 <p>So with that basic background, start by opening your <code>app.R</code> file in your COVID-19-dashboard project. In the top of this file, lets put what we have already developed by sourcing our <code>helpers.R</code> file and reading in our time series data, building today’s county centroids, and initializing a basemap.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Source helper functions -----</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">source</span>(<span class="st">&quot;helpers.R&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Initalize data</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>(<span class="st">&#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv&#39;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># Initalize data</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>()</span>
+<span id="cb1-5"><a href="#cb1-5"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span></code></pre></div>
 <p>Next, lets initialize the UI element as a <code>fluidPage</code>. In our UI, lets add a <code>titlePanel</code> describing what the application is (You should obviously change the title 😄)</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># User interface ----</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>( </span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Dashboard&#39;</span>)</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  )</span></code></pre></div>
-<p>For a Shiny App to run, we need a server function. For now, lets create a server function that does nothing.</p>
+<span id="cb2-4"><a href="#cb2-4"></a>)</span></code></pre></div>
+<p>For a Shiny App to run, we also need a server function. For now, lets create a server function that does nothing.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Server logic ----</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  </span>
-<span id="cb3-4"><a href="#cb3-4"></a>}</span></code></pre></div>
-<p>Last, you need to tell Shiny how to which UI relates to what server function in a synchronized Shiny object. To do this we provide our <code>ui</code> and <code>server</code> to the <code>shinyApp</code> function:</p>
+<span id="cb3-2"><a href="#cb3-2"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) { }</span></code></pre></div>
+<p>Last, you need to tell Shiny that UI relates to the server function as a synchronized Shiny object. To do this we provide our <code>ui</code> and <code>server</code> to the <code>shinyApp</code> function:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
 <p>Once finished, you should have an <code>app.R</code> file that looks like this:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Source helper functions -----</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="kw">source</span>(<span class="st">&quot;helpers.R&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Initalize data</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>(<span class="st">&#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv&#39;</span>)</span>
-<span id="cb5-6"><a href="#cb5-6"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
-<span id="cb5-7"><a href="#cb5-7"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># User interface ----</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>( </span>
-<span id="cb5-11"><a href="#cb5-11"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Dashboard&#39;</span>)</span>
-<span id="cb5-12"><a href="#cb5-12"></a>  )</span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co"># Server logic ----</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) { }</span>
-<span id="cb5-16"><a href="#cb5-16"></a></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="kw">shinyApp</span>( ui, server )</span></code></pre></div>
-<p>Once there, you can highlight your entire file (CMND/CNTL + A) and hit Run. The result should be something that looks like this:</p>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co"># Initalize data</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>covid19  &lt;-<span class="st">  </span><span class="kw">read_covid19</span>()</span>
+<span id="cb5-5"><a href="#cb5-5"></a>today    &lt;-<span class="st">  </span><span class="kw">today_centroids</span>(counties, covid19)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>basemap  &lt;-<span class="st">  </span><span class="kw">basemap</span>(today)</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co"># User interface ----</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>( </span>
+<span id="cb5-10"><a href="#cb5-10"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Dashboard&#39;</span>)</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  )</span>
+<span id="cb5-12"><a href="#cb5-12"></a></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co"># Server logic ----</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) { }</span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="kw">shinyApp</span>( ui, server )</span></code></pre></div>
+<p>Once there, you can highlight your entire file (CMND/CNTL + A) and hit Run, or hit “Run App” in the top right (this isn’t always visible) The result should be something that looks like this:</p>
 <p><img src="figures/shiny-00.png" width="400px" /></p>
-<p>Sometimes Shiny will hang up your R session. If this happens go ahead and kill the Shiny Process by clicking on the red stop sign in the Console window (see below).</p>
+<p>Sometimes Shiny will hang up your R session. If this happens go ahead and kill the Shiny process by clicking on the red stop sign in the Console window (see below).</p>
 <p><img src="figures/kill_shiny.png" width="800px" /></p>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
-<p>With that, you are ready to start adding elements to your Shiny App!! In the next <a href="06_shiny_maps.html">section</a> we’ll see add our <code>leaflet</code> map to Shiny App skeloton.</p>
+<p>Congratulations! You build a Shiny App - albeit a boring one <code>emo::ji("laugh")</code>. You are now ready to start adding elements to your Shiny App!! In the next <a href="06_shiny_maps.html">section</a> we’ll see add our <code>leaflet</code> map to Shiny App skeleton.</p>
 </div>
 
 

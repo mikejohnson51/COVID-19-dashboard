@@ -433,9 +433,9 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>In the last <a href="06_shiny_maps.html">section</a> we saw how the mouseover listener can be used to extract the marker id – in this case the FIPS code. Being able to extract this id from a leaflet map and mouse action is ideal for using the functions (make_graph, and make_table) we developed in section 02.</p>
-<p>Lets start with adding the <code>dyGraph</code>. Remember that to add an object we need to define it both in the UI (where it will be seen) and in the server (how it will be rendered, and adjusted)</p>
-<p>In the UI we want to display the chart below the covid_map in the mainPanel. We know we are generating a dyGraph object so we add <code>dyGraphOutput</code> and expect to display a renders output object called <code>covid_chart.</code></p>
+<p>In the last <a href="06_shiny_maps.html">section</a> we saw how the mouseover listener can be used to extract the marker id – in this case the FIPS code. Being able to extract this id from a leaflet map and mouseaction is ideal for using the functions (make_graph, and make_table) we developed in section 02,03, and 04.</p>
+<p>Lets start with adding the <code>dygraph</code> object. Remember that to add an object we need to define it both in the UI (where it will be seen) and in the server (how it will be adjusted, and rendered)</p>
+<p>In the UI we want to display the chart below the <code>covidMap</code> in the <code>mainPanel.</code> We know we are generating a dygraph object so we add <code>dyGraphOutput</code> and expect to display a rendered output object called <code>covidGraph.</code></p>
 <div id="extending-the-ui" class="section level2">
 <h2>Extending the UI</h2>
 <p>Below is our UI interface with some slight modifications:</p>
@@ -443,25 +443,25 @@ $(document).ready(function () {
 <span id="cb1-2"><a href="#cb1-2"></a>  <span class="kw">titlePanel</span>(<span class="st">&#39;Mike Johnson: COVID-19 Tracker&#39;</span>),</span>
 <span id="cb1-3"><a href="#cb1-3"></a>  <span class="co"># Sidebar layout output definitions ----</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a>  <span class="kw">sidebarPanel</span>(</span>
-<span id="cb1-5"><a href="#cb1-5"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covid_message&quot;</span>, <span class="dt">container =</span> h3),</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covidMessage&quot;</span>, <span class="dt">container =</span> h3),</span>
 <span id="cb1-6"><a href="#cb1-6"></a>  ),</span>
 <span id="cb1-7"><a href="#cb1-7"></a>  </span>
 <span id="cb1-8"><a href="#cb1-8"></a>  <span class="co"># Main panel for displaying outputs ----</span></span>
 <span id="cb1-9"><a href="#cb1-9"></a>  <span class="kw">mainPanel</span>(</span>
 <span id="cb1-10"><a href="#cb1-10"></a>    <span class="co"># Output: Map ----</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidmap&#39;</span>),</span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidMap&#39;</span>),</span>
 <span id="cb1-12"><a href="#cb1-12"></a>    <span class="co"># Output: Chart ----</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covid_graph&#39;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covidGraph&#39;</span>)</span>
 <span id="cb1-14"><a href="#cb1-14"></a>  )</span>
 <span id="cb1-15"><a href="#cb1-15"></a>)</span></code></pre></div>
-<p>Here you’ll notice that we added a <code>dyGraphOutput</code> that expects to find a <code>covid_graph</code> object in the the output list. This means the server must return a <code>dyGraph</code> object in the <code>covid_graph</code> slot of the <code>output</code> list.</p>
-<p>By placing this line of code underneath the <code>leafletOutput</code> we ensure the <code>UI</code> will render the graph underneath the map. We also made a visual tweak by telling the UI to render both the <code>covidMap</code> and <code>covidGraph</code> objects with a height of 600 pixels.</p>
+<p>Here you’ll notice that we added a <code>dyGraphOutput</code> that expects to find a <code>covidGraph</code> object in the output list. This means the server must return a <code>dygraph</code> object in the <code>covidGraph</code> slot of the <code>output</code> list.</p>
+<p>By placing this line of code underneath the <code>leafletOutput</code> we ensure the <code>UI</code> will render the graph underneath the map.</p>
 </div>
 <div id="extending-the-server" class="section level2">
 <h2>Extending the server</h2>
-<p>W=In our server function we will want to generate a dyGraph using our <code>make_graph</code> function. Remember that <code>make_graph</code> requires a FIP code as input.</p>
-<p>In general this FIP will be informed by user input. However when the application first starts we need a default value so the chart will execute.</p>
-<p>It might also be clear to you at this point that all of our functions require a FIP code as input. Because of this, we will create a global FIP variable that persists through the global scope of the server function. As a default, lets make a global FIP value containing the county with the most cases and add a line to save dyGraph, made with our make_graph function, to the output list.</p>
+<p>In our server function we will want to generate a dygraph using our <code>make_graph</code> function. Remember that <code>make_graph</code> requires a FIP code as input.</p>
+<p>In general this FIP will be informed by user input. However when the application first starts we need a default value so the chart will still execute.</p>
+<p>It might also be clear to you at this point that all of our functions require a FIP code as input. Because of this, we will create a global FIP variable that persists through the global scope of the server function. As a default, lets make a global FIP value containing the county with the most cases and add a line to save a rendered <code>dygraph</code> object, made with our <code>make_graph</code> function, to the output list.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output, session) {</span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="co"># Global variables initialized ----</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>  FIP &lt;-<span class="st"> </span>today<span class="op">$</span>fips[<span class="kw">which.max</span>(today<span class="op">$</span>cases)]</span>
@@ -469,11 +469,11 @@ $(document).ready(function () {
 <span id="cb2-5"><a href="#cb2-5"></a>  </span>
 <span id="cb2-6"><a href="#cb2-6"></a>  <span class="co"># Leaflet Map ----</span></span>
 <span id="cb2-7"><a href="#cb2-7"></a>  <span class="co"># ---- must be rendered as leaflet ----</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>  output<span class="op">$</span>covid_map  &lt;-<span class="st"> </span><span class="kw">renderLeaflet</span>({ basemap })</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  output<span class="op">$</span>covidMap  &lt;-<span class="st"> </span><span class="kw">renderLeaflet</span>({ basemap })</span>
 <span id="cb2-9"><a href="#cb2-9"></a>  </span>
 <span id="cb2-10"><a href="#cb2-10"></a>  <span class="co"># dyGraph Chart ----</span></span>
 <span id="cb2-11"><a href="#cb2-11"></a>  <span class="co"># ---- must be rendered as dyGraph ----</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a>  output<span class="op">$</span>covid_chart &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_chart</span>(covid19, FIP) })</span>
+<span id="cb2-12"><a href="#cb2-12"></a>  output<span class="op">$</span>covidGraph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_chart</span>(covid19, FIP) })</span>
 <span id="cb2-13"><a href="#cb2-13"></a>  </span>
 <span id="cb2-14"><a href="#cb2-14"></a>  <span class="co"># Events ----</span></span>
 <span id="cb2-15"><a href="#cb2-15"></a>    <span class="co"># removed here for clarity keep them in your server function</span></span>
@@ -482,35 +482,36 @@ $(document).ready(function () {
 <span id="cb2-18"><a href="#cb2-18"></a>    <span class="co"># removed here for clarity keep them in your server function</span></span>
 <span id="cb2-19"><a href="#cb2-19"></a>}</span></code></pre></div>
 <p>When we run our complete shiny application we’ll see something like this: <img src="figures/shiny-02.png" /></p>
-<p>Great!! 😄 we have a <code>map</code> that listens to <code>mouseover</code> and <code>moustout</code> listeners and a <code>chart</code> that displays the COVID trends for the USA county with the most cases.</p>
+<p>Great! 😄 we have a <code>map</code> that listens to <code>mouseover</code> and <code>mouseout</code> events and a <code>graph</code> that displays the COVID trends for the USA county with the most cases.</p>
 <p>While setting a default FIP value is needed for the application to initialize, it would be better if the chart adapted to input from the map – much like our reactive message!</p>
-<p>But, changing the graph with the <code>mouseover</code> would be impractical (think how fast it would adapt!!). Instead, lets change the chart when a map marker is clicked.</p>
+<p>But, changing the graph with the <code>mouseover</code> would be impractical (think how fast it would adapt!!). Instead, lets change the chart only when a <code>map_marker</code> is clicked.</p>
 </div>
 <div id="engaging-a-mouse-observer-mouseclick" class="section level2">
-<h2>Engaging a Mouse Observer (Mouseclick)</h2>
-<p>This requires observing the event of a mouse click. Following on our pattern from before, a <code>covidmap_marker_mouseclick</code> will do the trick!</p>
+<h2>Engaging a Mouse Observer (mouseclick)</h2>
+<p>This requires observing the event of a mouseclick. Following our pattern from before, a <code>covidMap_marker_click</code> will do the trick!</p>
 <p>Lets look at what to add to the server function:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidMap_marker_click, {</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>covidMap_marker_click<span class="op">$</span>id</span>
-<span id="cb3-3"><a href="#cb3-3"></a>    output<span class="op">$</span>covid_graph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid_data, FIP) })</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    output<span class="op">$</span>covidGraph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid_data, FIP) })</span>
 <span id="cb3-4"><a href="#cb3-4"></a>})</span></code></pre></div>
-<p>IMPORTANT: There is one <strong>very</strong> important thing to note in this entry. Here, the <code>&lt;&lt;-</code> sets the global value of FIP to the id/FIP of the clicked on marker. Had we just used <code>&lt;-</code>, the assignment to FIP would have only occurred in the scope of this <code>observeEvent</code> function. By using the <code>&lt;&lt;-</code> assignment operator, we are setting the value of FIP is the global scope of the program, and not just the function. Ultimately this will make the identified FIP accessible to other listeners in the application.</p>
+<p>IMPORTANT: There is one <strong>very</strong> important thing to note in this entry. Here, the <code>&lt;&lt;-</code> sets the <strong>global</strong> value of FIP to the id/FIP of the clicked on marker. Had we just used <code>&lt;-</code>, the assignment to FIP would have only occurred in the scope of this <code>observeEvent</code>. By using the <code>&lt;&lt;-</code> assignment operator, we are setting the value of FIP in the global scope of the server. Ultimately, this will make the identified FIP accessible to other listeners and methods in the application.</p>
 </div>
 <div id="extending-our-map-functionality" class="section level2">
 <h2>Extending our map functionality</h2>
-<p>Wouldn’t it also be nice if we could modify the map based on our click? How about we call on our <code>zoom_to_county</code> function by adding a map modifier to the mouseclick listener:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covid_map_marker_click, {</span>
-<span id="cb4-2"><a href="#cb4-2"></a>    FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>covid_map_marker_click<span class="op">$</span>id</span>
-<span id="cb4-3"><a href="#cb4-3"></a>    output<span class="op">$</span>covid_graph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_gprah</span>(covid_data, FIP) })</span>
-<span id="cb4-4"><a href="#cb4-4"></a>    <span class="kw">leafletProxy</span>(<span class="st">&#39;covid_map&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
+<p>Wouldn’t it also be nice if we could modify the map based on our click? How about we apply our <code>zoom_to_county</code> function within the mouseclick listener:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">observeEvent</span>(input<span class="op">$</span>covidMap_marker_click, {</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>covidMap_marker_click<span class="op">$</span>id</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    output<span class="op">$</span>covidGraph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid_data, FIP) })</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="kw">leafletProxy</span>(<span class="st">&#39;covidMap&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
 <span id="cb4-5"><a href="#cb4-5"></a>})</span></code></pre></div>
-<p>Doing this highlights another <strong>very</strong> important distinction shiny/leaflet functionality.</p>
-<p>Notice that with the <code>dyGraph</code> option we simply re-rendered the plot and overrode the existing <code>output$covid_grapht</code> object. This is because once a new FIP was selected, there was nothing from the previous graph that is be useful.</p>
-<p>The same isn’t true for leaflet maps, in fact, our changes are often related to zooming, adding, or removing features to an existing rendered map. Therefore there is no need to re-render the map!</p>
-<p>The Shiny and leaflet developers recognize this and offer the <code>leafletProxy</code> function to create a map-like object that can be customize and control a map that has already been rendered. Therefore instead of passing the direct basemap object to zoom_to_county, we pass a proxy of that object and Shiny knows to modify the existing rendered map.</p>
+<p>Doing this highlights another <strong>very</strong> important shiny/leaflet functionality.</p>
+<p>Notice that with the <code>dyGraph</code> option we simply re-rendered the plot and overrode the existing <code>output$covidGraph</code> object. This is because once a new FIP is selected, there was nothing from the previous graph that is useful.</p>
+<p>The same isn’t true for maps, in fact, our changes are often related to zooming, adding, or removing features of an existing rendered map. Therefore there is no need to re-render the map - just adjust it!</p>
+<p>The Shiny and leaflet developers recognize this and offer the <code>leafletProxy</code> function to create a map-like object that can customize and control an existing map . Therefore instead of passing the direct basemap object to zoom_to_county, we pass a proxy of that object and Shiny knows to modify the existing render.</p>
 <p>With all those changes lets run our app once again!</p>
 <p><img src="figures/shiny_map_click.gif" /></p>
 <p>Now when a marker is clicked, the map zooms to the county, displays the border, and changes the chart – all based on user input!!</p>
+<p>A full <code>app.R</code> file up to this point can be found <a href="https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/example_07.R">here</a></p>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ## TL;DR
 
-This section is all about getting data for visualization. You will stream COVID data from the NYTimes and join the most current data county centroids. if you haven't yet installed R and RStudio - or set up your COVID-19-dashboard project - please revist [here](00_setting_up_the_project.html)
+This section is all about getting data for visualization. You will read "live" COVID data from the NYTimes and join the most current date to a collection of USA county centroids. if you haven't yet installed R and RStudio - or set up your COVID-19-dashboard project - please revisit [here](00_setting_up_the_project.html)
 
 ## Introduction
 
@@ -27,7 +27,7 @@ To make our Shiny Application we first need data! In this section we are going t
 1. A `county-level timeseries` of the most up to data COVID-19 cases and deaths
 2. A spatial dataset of the `county centroids joined to 'todays' COVID-19 counts`.
 
-## Streaming COVID-19 Timeseries Data
+## Streaming COVID-19 time series Data
 
 The *New York Times* archives a daily record of county-level USA COVID-19 cases and deaths in a GitHub repository [here](https://github.com/nytimes/covid-19-data). 
 
@@ -37,11 +37,11 @@ In this repository the most current, raw, CSV can be accessed at the following U
 url ='https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
 ```
 
-R is really cool, and lets read this URL directly R using the `read.csv`: 
+R is really cool, and lets read this URL directly using `read.csv` by treating the string as a connection: 
 
 ```{r, eval = TRUE}
 # Here we are reading the URL directly using the url variable created above
-covid19 = read.csv(url)
+covid19 = read.csv(url, stringsAsFactors = FALSE)
 ```
 
 and look at it using the head() function to print the first few rows:
@@ -58,9 +58,9 @@ Now lets look at the structure (str) of the data:
 str(covid19)
 ```
 
-Things look pretty good but lets change or date values to  `date` objects for nicer plotting.  
+Things look pretty good but lets change our date values to `date` objects for nicer plotting.  
 
-We will also add a new variable called "name" which is a pretty-text string combinign the county and state names. Here we use the `dplyr` keyword `mutate` which allows us to create or transform variables. Since we are using `mutate` we need to attach the `dplyr` package.
+We will also add a new variable called "name" which will be a text string concatenating the county and state names. Here we use the `dplyr` keyword `mutate` which allows us to create or transform variables. Since we are using `mutate` we need to attach the `dplyr` package.
 
 ```{r, eval = TRUE}
 library(dplyr)
@@ -73,15 +73,17 @@ covid19  = covid19 %>%
 str(covid19)
 ```
 
-Great! Now we see that date is in fact a date objec, and name give us the combined state county name.
-Now lets us see how the data works using LA County (FIP = 6037) as an example. Here we are relaying of the `dplyr` `filter` keyword to return rows mathcing a prescribed condtion. Since dplyr was alreay attached above, we do not need to re-attach the package.
+Great! Now we see `date` is in fact a `date` object, and `name` gives us the combined state-county name.
+
+Now lets us see how the data works using LA County (FIP = 6037) as an example. Here we use the `dplyr` `filter` keyword to return rows matching a prescribed condition. Since `dplyr` was already attached above, we do not need to re-attach the package. This is also a good time to introduce that R lets you access any column of a data.frame using the `$`. For example, 
+`covid19$date` would return all dates in our `covid19` data.
 
 ```{r, eval = TRUE}
-# Filter the covid19 data to only those reocords were fips equals 6037
+# Filter the covid19 data to only those records were fips equals 6037
 test = filter(covid19, fips == 6037)
 
 # Plot the data
-plot(x = test$date, # define the x axis variable
+plot(x = test$date, # define the x axis variable using all the dates in test
      y = test$cases, # define the y axis variable
      type  = "l", # we wnat a line "l" plot
      xlab = "Date", ylab = "Cases", # refine the x and y labels
@@ -89,27 +91,31 @@ plot(x = test$date, # define the x axis variable
 
 ```
 
+Yikes LA! That is quite a curve....
+
 ### Getting Spatial Data for the Counties:
 
-There are many ways to get spatial data into R. I have saved the USA low-resolution county geometries [here](). You can download it, save it into your `data folder`, attach the `sf` library, read the RDS file, and plot the geometry attributes of the data!
+There are many ways to get spatial data into R. I have saved the USA low-resolution county geometries [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/data/counties.rds) for you to download. Please do so and save it into the `data folder` folder you created.
+
+Next, we will attach the `sf` library, read the downloaded RDS file, and plot the geometry attribute of the data!
 
 ```{r, message=FALSE, eval = TRUE}
 library(sf) # Attach sf library
 
-counties = readRDS("./data/counties.rds") # read rds data
+counties = readRDS("./data/counties.rds") # read rds data using the path to your resource
 
 plot(counties$geometry) # plot the county geometries
 ```
 
 
-### Getting county centroids and joing to COVID data
+### Getting county centroids and joining to COVID data
 
-Great! Now we have a spatial representation of all continental USA counties and a time series of COVID-19 cases and deaths. Lets create a new dataset that joins the most current daily statistics to the spatial geomertries. For faster rendering, we will convert the county polygons into centroids using the following steps:
+Great! Now we have a spatial representation of all continental USA counties and a time series of COVID-19 cases and deaths. Lets create a new dataset that joins the most recent daily statistics to the spatial geometries For faster rendering, we will convert the county polygons into centroids using the following steps:
 
-1. Filter our `covid19_data` to the the most current (maximum) date
-2. Join it to the counties using the shared `fips` variable, 
+1. `Filter` our `covid19_data` to the the most current (maximum) date
+2. `Join` it to the counties using the same-named `fips` variable, 
 3. Remove NA values
-4. scale the cases to determine a realtive scales, case count.
+4. scale the cases to determine a standardized case count.
 
 ```{r, warning=FALSE}
 
@@ -118,37 +124,41 @@ today = filter(covid19, date == max(date)) %>% # filter all data to the maximum 
   na.omit() %>% # remove NA values
   mutate(size = abs(cases - mean(cases)) / sd(cases)) # Compute a scaled case count
   
-
-# Plot and size the shaped by the scaled size value
+# Plot and size (cex) the cnetroid data
 plot(today$geometry, cex = today$size)
 ```
 
+I know that was a lot, if you understood what was going on in the code great! If you didn't, that is totally OK too (it just means you haven't had as much programming experience).
+
 ## Adding Data Functions to `helpers.R`
 
-Now lets turn the above processes into `functions` that we can call at anytime to our helpers.R file. 
+Now lets turn the above processes into `functions` that we can save to our `helpers.R` file and latter use in our Shiny Application.
 
 You can either type them in or use the copy icon to put these in your `helpers.R` file
 
 ```{r}
+#Load Spatial Data
+counties = readRDS("./data/counties.rds")
 
-# This function takes a URL and modifies the attributes are discussed above. Once all these things are done, the formated data is returned as output
-read_covid19 = function(url){
-  read.csv(url) %>% 
-  mutate(date = as.Date(date), 
-         name = paste0(county, " County, ", state))
+# Read in COVID-19 Timesries from URL
+read_covid19 = function(){
+  url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
+  read.csv(url, stringsAsFactors = FALSE) %>% 
+    mutate(date = as.Date(date), 
+           fips = as.numeric(fips), 
+           name = paste0(county, " County, ", state))
 }
 
-# Here we require the user to provide the counties and COVID data. In the functions, the centroids are computed and joined to the COVID-19 data.
-
+# Join County Data with 
 today_centroids = function(counties, covid_data){
   filter(covid_data, date == max(date)) %>% 
-  left_join(st_centroid(counties), by = 'fips') %>% 
-  na.omit() %>% 
-  mutate(size = abs(cases - mean(cases)) / sd(cases)) %>% 
-  st_as_sf()
+    left_join(st_centroid(counties), by = 'fips') %>% 
+    na.omit() %>% 
+    mutate(size = abs(cases - mean(cases)) / sd(cases)) %>% 
+    st_as_sf()
 }
 ```
 
 ## Conclusion
 
-Fantastic, now we have methods and data needed to build our Shiny App. Remember that c Lets move to the next [section](02_graphs.html) where we will make interactive graphs of our timeseries data using the `dyGraphs` package. 
+Fantastic, now we have methods and data needed to build our Shiny App, and we have useful functions to let us manipulate that data. If you feel lost, again, it is not a problem! Lets move to the next [section](02_graphs.html) where we will make interactive graphs of our time series data using the `dygraphs` package and we will start to see things coming together 

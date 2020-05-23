@@ -433,7 +433,7 @@ $(document).ready(function () {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>So we’ve set up a <code>map</code> ( <a href="06_shiny_maps.html">section</a> ) and <code>dyGraph</code>( <a href="07_shiny_graph.html">section</a> ) that are sychronized using Shiny reactive components and a common FIP id. Now lets use the same principles to add the table we generate with <code>make_table</code>.</p>
+<p>So we’ve set up a <code>map</code> ( <a href="06_shiny_maps.html">section</a> ) and <code>dygraph</code>( <a href="07_shiny_graphs.html">section</a> ) that are synchronized using Shiny reactive components and a common FIP id. Now lets use the same principles to add the table we generate with <code>make_table</code>.</p>
 <div id="extending-the-ui" class="section level2">
 <h2>Extending the UI</h2>
 <p>Below is our UI interface with some slight modifications:</p>
@@ -443,24 +443,24 @@ $(document).ready(function () {
 <span id="cb1-4"><a href="#cb1-4"></a>  <span class="co"># Sidebar layout output definitions ----</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a>  <span class="kw">sidebarPanel</span>(</span>
 <span id="cb1-6"><a href="#cb1-6"></a>    <span class="co"># Output: Message ----</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covid_message&quot;</span>, <span class="dt">container =</span> h3),</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    <span class="kw">textOutput</span>(<span class="st">&quot;covidMessage&quot;</span>, <span class="dt">container =</span> h3),</span>
 <span id="cb1-8"><a href="#cb1-8"></a>    <span class="co"># Output: Table ----</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="kw">DTOutput</span>(<span class="st">&quot;covid_table&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="kw">DTOutput</span>(<span class="st">&quot;covidTable&quot;</span>)</span>
 <span id="cb1-10"><a href="#cb1-10"></a>  ),</span>
 <span id="cb1-11"><a href="#cb1-11"></a>  </span>
 <span id="cb1-12"><a href="#cb1-12"></a>  <span class="co"># Main panel for displaying outputs ----</span></span>
 <span id="cb1-13"><a href="#cb1-13"></a>  <span class="kw">mainPanel</span>(</span>
 <span id="cb1-14"><a href="#cb1-14"></a>    <span class="co"># Output: Map ----</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidmap&#39;</span>),</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="kw">leafletOutput</span>(<span class="st">&#39;covidMap&#39;</span>),</span>
 <span id="cb1-16"><a href="#cb1-16"></a>    <span class="co"># Output: Chart ----</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covid_chart&#39;</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    <span class="kw">dygraphOutput</span>(<span class="st">&#39;covidGraph&#39;</span>)</span>
 <span id="cb1-18"><a href="#cb1-18"></a>  )</span>
 <span id="cb1-19"><a href="#cb1-19"></a>)</span></code></pre></div>
-<p>At this point our <code>mainPanel</code> is getting pretty full so we added our table to the <code>sidebarPanel</code> instead (Don’t forget commas to seperate UI elements 😄).</p>
+<p>At this point our <code>mainPanel</code> is getting pretty full so we added our table to the <code>sidebarPanel</code>instead (Don’t forget commas to separate UI elements 😄).</p>
 </div>
 <div id="extending-the-server" class="section level2">
 <h2>Extending the server</h2>
-<p>Now lets make sure our server function appropriatly renders the <code>covid_table</code> using our <code>make_table</code> function. Remember we need the table to populate before any interaction happens (using the county with the most cases), and then update itself on each mouse click.</p>
+<p>Now, lets make sure our server function appropriately renders the <code>covidTable</code> using our <code>make_table</code> function. Remember we need the table to populate before any interaction happens (using the county with the most cases), and then update itself on each mouse click in the map.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output, session) {</span>
 <span id="cb2-2"><a href="#cb2-2"></a>  </span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="co"># Global variables initialized ----</span></span>
@@ -472,27 +472,28 @@ $(document).ready(function () {
 <span id="cb2-9"><a href="#cb2-9"></a></span>
 <span id="cb2-10"><a href="#cb2-10"></a>  <span class="co"># DT Table ----</span></span>
 <span id="cb2-11"><a href="#cb2-11"></a>  <span class="co"># ---- must be rendered as DT ----</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a>    output<span class="op">$</span>covid_table   &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_DT</span>(today, FIP) })</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    output<span class="op">$</span>covidTable   &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_table</span>(today, FIP) })</span>
 <span id="cb2-13"><a href="#cb2-13"></a>  </span>
 <span id="cb2-14"><a href="#cb2-14"></a>  <span class="co"># Events ----</span></span>
 <span id="cb2-15"><a href="#cb2-15"></a>     <span class="co"># reduced here for clarity keep them in your server function</span></span>
 <span id="cb2-16"><a href="#cb2-16"></a>  </span>
-<span id="cb2-17"><a href="#cb2-17"></a>   <span class="kw">observeEvent</span>(input<span class="op">$</span>covid_map_marker_click, {</span>
-<span id="cb2-18"><a href="#cb2-18"></a>      FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>covid_map_marker_click<span class="op">$</span>id</span>
-<span id="cb2-19"><a href="#cb2-19"></a>      output<span class="op">$</span>covid_chart &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid19, FIP) })</span>
-<span id="cb2-20"><a href="#cb2-20"></a>      <span class="kw">leafletProxy</span>(<span class="st">&#39;covid_map&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
-<span id="cb2-21"><a href="#cb2-21"></a>      output<span class="op">$</span>covid_table   &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_table</span>(today, FIP) })</span>
+<span id="cb2-17"><a href="#cb2-17"></a>   <span class="kw">observeEvent</span>(input<span class="op">$</span>covidMap_marker_click, {</span>
+<span id="cb2-18"><a href="#cb2-18"></a>      FIP &lt;&lt;-<span class="st"> </span>input<span class="op">$</span>covidMap_marker_click<span class="op">$</span>id</span>
+<span id="cb2-19"><a href="#cb2-19"></a>      output<span class="op">$</span>covidGraph &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({ <span class="kw">make_graph</span>(covid19, FIP) })</span>
+<span id="cb2-20"><a href="#cb2-20"></a>      <span class="kw">leafletProxy</span>(<span class="st">&#39;covidMap&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">zoom_to_county</span>(counties, FIP)</span>
+<span id="cb2-21"><a href="#cb2-21"></a>      output<span class="op">$</span>covidTable   &lt;-<span class="st"> </span><span class="kw">renderDT</span>({ <span class="kw">make_table</span>(today, FIP) })</span>
 <span id="cb2-22"><a href="#cb2-22"></a>    })</span>
 <span id="cb2-23"><a href="#cb2-23"></a></span>
 <span id="cb2-24"><a href="#cb2-24"></a>  <span class="co"># Message to Display ----</span></span>
 <span id="cb2-25"><a href="#cb2-25"></a>    <span class="co"># removed here for clarity keep them in your server function</span></span>
 <span id="cb2-26"><a href="#cb2-26"></a>}</span></code></pre></div>
 <p><img src="figures/final-shiny.gif" /></p>
+<p>A full <code>app.R</code> file up to this point can be found <a href="https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/example_08.R">here</a></p>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
-<p>Alright! That’s it, you’ve built a complete, interactive, Shiny application that incorporates webscraping, dynamic charts, maps, and tables!</p>
-<p>The next <a href="09_autocomplete_window.html">section</a> will go over one one last advanced topic about implementing an auto filling searchbar and connecting it to a keyboard listener (enter key). If you aren’t in the mood for those, skip to <a href="10_publish.html">section 10</a> to see how change the theme of your application and deploy it as a live website!</p>
+<p>Alright! That’s it, you’ve built a complete, interactive, Shiny application that incorporates web scraping, dynamic charts, maps, and tables!</p>
+<p>The next <a href="09_autocomplete_window.html">section</a> will go over one one last advanced topic about implementing an auto filling search bar and connecting it to a keyboard listener (enter key). If you aren’t in the mood for those, skip to <a href="10_publish.html">section 10</a> to see how change the theme of your application and deploy it as a live website!</p>
 </div>
 
 
