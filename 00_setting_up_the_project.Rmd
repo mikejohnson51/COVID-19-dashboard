@@ -14,7 +14,10 @@ klippy::klippy(position = c('top', 'right'))
 knitr::opts_chunk$set(echo = TRUE, 
                       class.source = "numberLines lineAnchors",
                       warning = FALSE, message = FALSE,
-                      eval = TRUE)
+                      eval = TRUE, fig.align = "center")
+
+
+#https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/helpers.R
 ```
 
 ```{r, out.width = "300px", eval=TRUE,echo=FALSE, fig.align='center'}
@@ -23,31 +26,33 @@ knitr::include_graphics("figures/logos.png")
 
 ## Getting Set up
 
-To create our COVID19-Dashboard we need to create new R project. R projects are useful for ensuring that paths and directories are centralized. To make a new project launch RStudio on your computer. 
+To create our COVID19-Dashboard we need to create new R project. R projects are useful for ensuring paths and directories are centralized. To make a new project launch RStudio on your computer. 
 
-If you do not have R and R studio already installed you can find R [here](https://www.r-project.org/). Make sure to get the most up to date version that is not a "pre-release".
+If you do not have R and RStudio already installed you can find R [here](https://www.r-project.org/). Make sure to get the most up to date version that is not a "pre-release".
 
-R Studio is an IDE ("Integrated Development Environment") for managing R projects, writing code, and running examples. You can download RStudio [here](https://rstudio.com/products/rstudio/#Desktop). 
+RStudio is an IDE ("Integrated Development Environment") for managing R projects, writing code, and running examples. You can download RStudio [here](https://rstudio.com/products/rstudio/#Desktop). 
 
 Make sure to get the free Desktop version about halfway down the page.
 
-Follow the directions for installing each of those and you a will be set to go! Remeber though, that since RStudio runs R, you must install R first `r emo::ji("smile")`
+Follow the directions for installing each of those and you a will be set to go! Remember though, that since RStudio runs R, you must install R first `r emo::ji("smile")`
 
 ## Launch R Studio
 
-With R and RStudio installed, launch RStudio. Here we will be creating a new project by selecting:
+With R and RStudio installed, launch RStudio where we will create a new project by selecting:
 
 `File -> New Project -> New Directory -> Shiny Web Application`
 
-When prompted, fill in the project name "e.g. COVID19-Dashboard" and tell RStudio where to put your project on your computer (think of your project as a big folder where everything will be stored and linked). You should have something like this:
+When prompted, fill in the project name "e.g. COVID19-Dashboard" and tell RStudio where to put your project on your computer (think of your project as a big folder where everything will be stored). You should have something like this:
 
 ```{r, out.width = "400px", eval=TRUE,echo=FALSE}
 knitr::include_graphics("figures/create_project.png")
 ```
 
+Where the subdirectory is unique to your computer.
+
 When finished hit, **Create Project!**
 
-After a moment a new session window will open that looks like the following, although your tabs may be in different sections...
+After a moment a new session window will open that looks like the following, although your tabs may be in different sections. The general functionality will be present.
 
 ```{r, out.width = "600px", eval=TRUE,echo=FALSE}
 knitr::include_graphics("figures/structure.png")
@@ -89,7 +94,7 @@ New R scripts can be created by selecting:
 
 Or hitting `CMND+SHIFT+N` or `CTR+SHIFT+N`
 
-Once a new `Untitled.R` file is opened, you should save it to the desired location. In our case your top-level project directory (see below):
+Once a new `Untitled.R` file is opened, you should save it to the desired location. In our case your top-level project directory. Do ahead and make a new script called `app.R` and `helpers.R` (see below):
 
 ```{r, out.width = "400px", eval=TRUE,echo=FALSE}
 knitr::include_graphics("figures/project.png")
@@ -106,9 +111,7 @@ In R, packages can be installed from CRAN (Comprehensive R Archive Network) usin
 install.packages('dplyr')
 ```
 
-Where, 'dplyr' is the name of the package we want to install. So what exactly is a package?
-
-Think of a package as a set of functions that others have written to make your life easier. 
+Where, `dplyr` is the name of the package we want to install. Think of a package as a set of functions that others have written to make your life easier. 
 
 **IMPORTANT:**  installing a package only downloads the source code onto your computer. To actually use it, you'll need to attach/load the package using the `library()` call.
 
@@ -116,32 +119,19 @@ Think of a package as a set of functions that others have written to make your l
 library(dplyr)
 ```
 
-Open your `helpers.R` file from the files tab and copy the following into the top of the file. This will ensure that you download and 
+Lets makes sure that you have all of the packages needed for this assignment. Please copy the following code into you R console and hit ENTER.
+The code is also available for you as an .R file [here](https://github.com/mikejohnson51/COVID-19-dashboard/blob/master/scripts/installs.R).
 
 ```{r}
 # 1. Install missing packages ----
-list.of.packages <- c("dplyr", "sf", "leaflet", "dygraphs", "DT", 'shiny')
+list.of.packages <- c("dplyr", "sf", 
+                      "leaflet", "dygraphs", "DT", 
+                      'shiny', 'rvest', "dqshiny", 
+                      "shinythemes", "rsconnect")
 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
-
-# 2. Load packages ----
-# Data Manipulation
-library(dplyr)    # data.frames
-library(sf)       # Spatial
-
-# Interactive Data Viz
-library(leaflet)  # Maps
-library(dygraphs) # Charts
-library(DT)       # tables
-
-# Shiny
-library(shiny)    # Starting Reactivity
 ```
-
-Run all the code by highlighting and hitting `CMND+ENTER` (Mac) or `CTRL+ENTER` (Windows).
-
-Alternatively you can run a linea one-by-one using the same keyboard shortcuts, or the `RUN` icon in the top right of the text editing window.
 
 The first time you run this code it will take a while since everything needs to download. Fortunately this only needs to be done once.
 
@@ -156,6 +146,36 @@ Do you want to install from source the package which needs compilation? (Yes/no/
 This has to do with the sf package. For now, go ahead and type no to avoid potential build issues.
 
 **no**
+
+### 4. Running lines of Code
+
+Great! Assuming that everything went as planned. You should have all the source code you need for this project on your local computer. Now lets take a minute to see how to write a R script. Go ahead and open your helpers.R file.
+
+In this files go ahead and paste the following:
+
+```{r}
+# 2. Load packages ----
+# Data Manipulation
+library(dplyr)    # data.frames
+library(sf)       # Spatial
+
+# Interactive Data Viz
+library(leaflet)  # Maps
+library(dygraphs) # Charts
+library(DT)       # tables
+library(rvest)    # webscraping
+
+# Shiny
+library(dqshiny)    # auto complete
+library(shiny)       # Starting Reactivity
+library(shinythemes) # themes
+```
+
+Run all the code by highlighting and hitting `CMND+ENTER` (Mac) or `CTRL+ENTER` (Windows).
+
+Alternatively you can run a lines one-by-one using the same keyboard shortcuts, or the `RUN` icon in the top right of the text editing window.
+
+After running each line and making sure you can attach all packages, go ahead and save you file. The painful stuff is now over and we are ready to start building our application!
 
 ### 4. Conclusion
 
