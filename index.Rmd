@@ -1,4 +1,5 @@
 ---
+title: "COVID19-Dashboard"
 output: 
   html_document:
     highlight: pygment
@@ -37,8 +38,8 @@ To complete this labs work your way through each section starting from building 
 
 ### 00: [Setting up your Project](00_setting_up_the_project.html)  
 ### 01: [Getting Data](01_getting_data.html)  
-### 02: [Building dynamic Maps](02_maps.html)
-### 03: [Building dynamic Graphs](03_charts.html)
+### 02: [Building dynamic Graphs](02_charts.html)
+### 03: [Building dynamic Maps](03_maps.html)
 ### 04: [Building dynamic Tables](04_tables.html)
 ### 05: [Shiny Basics](05_shiny_basics.html)
 ### 06: [Adding a Map](06_shiny_maps.html)

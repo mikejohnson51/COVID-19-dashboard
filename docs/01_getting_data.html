@@ -455,24 +455,17 @@ $(document).ready(function () {
 <span id="cb2-2"><a href="#cb2-2"></a>covid19 =<span class="st"> </span><span class="kw">read.csv</span>(url, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p>and look at it using the head() function to print the first few rows:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">head</span>(covid19)</span></code></pre></div>
-<pre><code>##         date    county      state  fips cases
-## 1 2020-01-21 Snohomish Washington 53061     1
-## 2 2020-01-22 Snohomish Washington 53061     1
-## 3 2020-01-23 Snohomish Washington 53061     1
-## 4 2020-01-24      Cook   Illinois 17031     1
-## 5 2020-01-24 Snohomish Washington 53061     1
-## 6 2020-01-25    Orange California  6059     1
-##   deaths
-## 1      0
-## 2      0
-## 3      0
-## 4      0
-## 5      0
-## 6      0</code></pre>
+<pre><code>##         date    county      state  fips cases deaths
+## 1 2020-01-21 Snohomish Washington 53061     1      0
+## 2 2020-01-22 Snohomish Washington 53061     1      0
+## 3 2020-01-23 Snohomish Washington 53061     1      0
+## 4 2020-01-24      Cook   Illinois 17031     1      0
+## 5 2020-01-24 Snohomish Washington 53061     1      0
+## 6 2020-01-25    Orange California  6059     1      0</code></pre>
 <p><strong>That was easy!</strong> 😄</p>
 <p>Now lets look at the structure (str) of the data:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">str</span>(covid19)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    164886 obs. of  6 variables:
+<pre><code>## &#39;data.frame&#39;:    203591 obs. of  6 variables:
 ##  $ date  : chr  &quot;2020-01-21&quot; &quot;2020-01-22&quot; &quot;2020-01-23&quot; &quot;2020-01-24&quot; ...
 ##  $ county: chr  &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Cook&quot; ...
 ##  $ state : chr  &quot;Washington&quot; &quot;Washington&quot; &quot;Washington&quot; &quot;Illinois&quot; ...
@@ -489,8 +482,8 @@ $(document).ready(function () {
 <span id="cb7-6"><a href="#cb7-6"></a></span>
 <span id="cb7-7"><a href="#cb7-7"></a><span class="co">## Lets check!</span></span>
 <span id="cb7-8"><a href="#cb7-8"></a><span class="kw">str</span>(covid19)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    164886 obs. of  7 variables:
-##  $ date  : Date, format:  ...
+<pre><code>## &#39;data.frame&#39;:    203591 obs. of  7 variables:
+##  $ date  : Date, format: &quot;2020-01-21&quot; ...
 ##  $ county: chr  &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Snohomish&quot; &quot;Cook&quot; ...
 ##  $ state : chr  &quot;Washington&quot; &quot;Washington&quot; &quot;Washington&quot; &quot;Illinois&quot; ...
 ##  $ fips  : int  53061 53061 53061 17031 53061 6059 17031 53061 4013 6037 ...
