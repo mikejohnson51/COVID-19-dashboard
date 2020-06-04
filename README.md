@@ -32,9 +32,9 @@ that can be found here:
 
 ### 01: [Getting Data](https://mikejohnson51.github.io/COVID-19-dashboard/01_getting_data.html)
 
-### 03: [Building dynamic Graphs](https://mikejohnson51.github.io/COVID-19-dashboard/02_charts.html)
+### 02: [Building dynamic Graphs](https://mikejohnson51.github.io/COVID-19-dashboard/02_graphs.html)
 
-### 02: [Building dynamic Maps](https://mikejohnson51.github.io/COVID-19-dashboard/03_maps.html)
+### 03: [Building dynamic Maps](https://mikejohnson51.github.io/COVID-19-dashboard/03_maps.html)
 
 ### 04: [Building dynamic Tables](https://mikejohnson51.github.io/COVID-19-dashboard/04_tables.html)
 
