@@ -16,7 +16,7 @@ ui <- fluidPage(
                        max_options = 5,
                        structure(today$fips, names = today$name)),
     # Output: Message ----
-    DTOutput("covidTable"),
+    DTOutput("covidTable")
   ),
   
   # Main panel for displaying outputs ----
@@ -62,7 +62,7 @@ server <- function(input, output, session) {
   })
   
   observe( 
-    if(input$auto == "" || is.null(input$auto)){ 
+    if(input$auto == ""){ 
       NULL 
     } else {
       FIP <<- input$auto

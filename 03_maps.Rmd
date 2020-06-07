@@ -133,7 +133,8 @@ your personal touches and aesthetics! Note that we added a legend that you can t
 ```{r, eval = FALSE}
 
 basemap = function(today){
-  pal <- colorNumeric("inferno", domain = today$size, n = 50)
+  pal  <- colorNumeric("inferno", domain = today$size, n = 50)  # markers
+  pal2 <- colorNumeric("inferno", domain = today$cases, n = 50) # legend 
   
   leaflet(data = today) %>%
     addProviderTiles('CartoDB.Positron') %>%
